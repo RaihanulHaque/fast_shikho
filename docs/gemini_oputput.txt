@@ -1,0 +1,527 @@
+python gemini_structured_output_v2.py HSC images/biology/image.png images/biology/image2.png
+
+[1/2] Generating study package...
+      'Functions and Types of RBC and WBC' — Biology, HSC
+      Diagram flag set on problem(s): [1, 2]
+        Problem 1: A diagram helps visualize the quaternary structure of hemoglobin and the location of heme groups.
+        Problem 2: Classification charts are standard in biology to remember categories and subcategories easily.
+
+[2/2] Generating 2 diagram(s) via batch API...
+  Generating diagram for problem 1...
+  Generating diagram for problem 2...
+      Problem 1 → ./practice_diagram_1.png
+      Problem 2 → ./practice_diagram_2.png
+
+──────────────────────────────────────────────────
+Session Title      : Functions and Types of RBC and WBC
+Subject            : Biology
+Class Level        : HSC
+Quick Summary      : এই পাঠে লোহিত ও শ্বেত রক্তকণিকার গঠন ও কাজ নিয়ে বিস্তারিত আলোচনা করা হয়েছে। লোহি...
+What to Learn      : 7 items
+Shortcut Techniques: 2 tips
+Important QA items : 5
+  [mcq] রক্তে RBC ও WBC এর অনুপাত কত?
+  [true_false] পরিণত শ্বেত রক্তকণিকায় হিমোগ্লোবিন থাকে না।
+  [fill_in_the_blanks] শ্বেত রক্তকণিকা ___ প্রক্রিয়ায় জীবাণু ধ্বংস করে দেহকে রক্ষা 
+  [connecting_answer] 
+  [mcq] রক্তে WBC এর সংখ্যা স্বাভাবিকের চেয়ে অস্বাভাবিক হারে বৃদ্ধি 
+Practice Problems  : 8
+  Problem 1 diagram: ./practice_diagram_1.png
+  Problem 2 diagram: ./practice_diagram_2.png
+Top Questions      : 10
+  [easy][mcq] HSC — রক্তে প্রতি ঘন মিলিমিটারে শ্বেত রক্তকণিকার গড় সংখ্
+  [medium][short_answer] HSC — রক্তকে কেন 'ভ্রাম্যমাণ প্রতিরক্ষাকারী একক' বলা হয়?
+  [medium][broad_answer] HSC — নিচের কোনগুলো শ্বেত রক্তকণিকার বৈশিষ্ট্য?
+  [hard][creative] HSC — উদ্দীপক: মি. ক-এর রক্ত পরীক্ষায় দেখা গেল তার রক্তে
+  [easy][mcq] HSC — বিলিরুবিন কোথায় তৈরি হয়?
+  [medium][short_answer] HSC — রক্তের pH নিয়ন্ত্রণের প্রক্রিয়াটি কী নামে পরিচিত?
+  [medium][broad_answer] HSC — অ্যাগ্রানিউলোসাইট শ্বেত রক্তকণিকার প্রকারভেদ চিহ্ন
+  [medium][short_answer] HSC — RBC-তে হিম গ্রুপের কাজ কী?
+  [easy][mcq] HSC — লিঊকোপেনিয়া বলতে কী বোঝায়?
+  [hard][mcq] Admission — হিমোগ্লোবিনের একটি অণু কয়টি অক্সিজেন অণু পরিবহন কর
+Quick Test MCQs    : 8
+
+Full JSON:
+{
+  "session_title": "Functions and Types of RBC and WBC",
+  "detected_subject": "Biology",
+  "class_level_hint": "HSC",
+  "key_points": {
+    "what_to_learn": [
+      "লোহিত রক্তকণিকার (RBC) প্রধান কাজসমূহ যেমন অক্সিজেন ও কার্বন ডাই-অক্সাইড পরিবহন।",
+      "হিমোগ্লোবিনের গঠন: ৪টি পলিপেপটাইড চেইন ও ১টি হিম গ্রুপ।",
+      "রক্তের সান্দ্রতা (Viscosity) ও pH সাম্যাবস্থা রক্ষায় RBC-এর ভূমিকা।",
+      "শ্বেত রক্তকণিকার (WBC) বৈশিষ্ট্য এবং ফ্যাগোসাইটোসিস প্রক্রিয়া।",
+      "রক্তকণিকার সংখ্যার অস্বাভাবিক অবস্থা: লিউকোসাইটোসিস, লিউকো পেনিয়ার এবং লিউকেমিয়া।",
+      "RBC ও WBC এর অনুপাত (৬০০:১) এবং এদের স্বাভাবিক সংখ্যা।",
+      "অ্যাগ্রানিউলোসাইট ও গ্রানিউলোসাইট এর মধ্যে পার্থক্য।"
+    ],
+    "quick_summary": "এই পাঠে লোহিত ও শ্বেত রক্তকণিকার গঠন ও কাজ নিয়ে বিস্তারিত আলোচনা করা হয়েছে। লোহিত রক্তকণিকা প্রধানত হিমোগ্লোবিনের মাধ্যমে অক্সিজেন পরিবহন করে এবং রক্তের অম্ল-ক্ষারের ভারসাম্য রক্ষা করে, অন্যদিকে শ্বেত রক্তকণিকা দেহের ভ্রাম্যমাণ প্রতিরক্ষাকারী একক হিসেবে কাজ করে। রক্তে এই কণিকাগুলোর সংখ্যার তারতম্য বিভিন্ন শারীরিক অবস্থা বা রোগ যেমন লিউকেমিয়া নির্দেশ করে। শ্বেত রক্তকণিকাকে তাদের দানার উপস্থিতির ওপর ভিত্তি করে দানাদার ও অদানাদার এই দুই ভাগে ভাগ করা যায়।",
+    "shortcut_techniques": [
+      "RBC:WBC অনুপাত মনে রাখতে ৬০০:১ মনে রাখুন (রক্তে লোহিত কণিকা সংখ্যায় অনেক বেশি)।",
+      "অদানাদার শ্বেতকণিকা মনে রাখতে 'লিমন' (লিম্ফোসাইট, মোনোসাইট) শব্দটি ব্যবহার করুন।"
+    ],
+    "important_points_qa": [
+      {
+        "type": "mcq",
+        "question": "রক্তে RBC ও WBC এর অনুপাত কত?",
+        "options": {
+          "A": "৫০০:১",
+          "B": "৬০০:১",
+          "C": "১:৬০০",
+          "D": "৭০০:১"
+        },
+        "correct_option": "B",
+        "correct_bool": null,
+        "blank_options": null,
+        "blank_answer": null,
+        "left_items": null,
+        "right_items": null,
+        "correct_matches": null,
+        "explanation": "মানবদেহে প্রতি ৬০০টি লোহিত রক্তকণিকার বিপরীতে ১টি শ্বেত রক্তকণিকা থাকে।"
+      },
+      {
+        "type": "true_false",
+        "question": "পরিণত শ্বেত রক্তকণিকায় হিমোগ্লোবিন থাকে না।",
+        "options": null,
+        "correct_option": null,
+        "correct_bool": true,
+        "blank_options": null,
+        "blank_answer": null,
+        "left_items": null,
+        "right_items": null,
+        "correct_matches": null,
+        "explanation": "শ্বেত রক্তকণিকা হিমোগ্লোবিনবিহীন এবং বর্ণহীন হয়, তাই এদের সাদা দেখায়।"
+      },
+      {
+        "type": "fill_in_the_blanks",
+        "question": "শ্বেত রক্তকণিকা ___ প্রক্রিয়ায় জীবাণু ধ্বংস করে দেহকে রক্ষা করে।",
+        "options": null,
+        "correct_option": null,
+        "correct_bool": null,
+        "blank_options": [
+          "অসমোসিস",
+          "ফ্যাগোসাইটোসিস",
+          "ডিফিউশন"
+        ],
+        "blank_answer": "ফ্যাগোসাইটোসিস",
+        "left_items": null,
+        "right_items": null,
+        "correct_matches": null,
+        "explanation": "শ্বেত রক্তকণিকা বা লিউকোসাইট ফ্যাগোসাইটোসিস প্রক্রিয়ায় বাইরের জীবাণু গ্রাস করে ধ্বংস করে।"
+      },
+      {
+        "type": "connecting_answer",
+        "question": null,
+        "options": null,
+        "correct_option": null,
+        "correct_bool": null,
+        "blank_options": null,
+        "blank_answer": null,
+        "left_items": [
+          "বিলিরুবিন",
+          "বিলিভার্ডিন"
+        ],
+        "right_items": [
+          "সবুজ বর্ণ",
+          "হলুদ বর্ণ"
+        ],
+        "correct_matches": [
+          {
+            "left": "বিলিরুবিন",
+            "right": "হলুদ বর্ণ"
+          },
+          {
+            "left": "বিলিভার্ডিন",
+            "right": "সবুজ বর্ণ"
+          }
+        ],
+        "explanation": "RBC ধ্বংস হওয়ার পর যকৃতে বিলিরুবিন (হলুদ) ও বিলিভার্ডিন (সবুজ) উৎপন্ন হয়।"
+      },
+      {
+        "type": "mcq",
+        "question": "রক্তে WBC এর সংখ্যা স্বাভাবিকের চেয়ে অস্বাভাবিক হারে বৃদ্ধি পাওয়াকে কী বলে?",
+        "options": {
+          "A": "লিউকোসাইটোসিস",
+          "B": "লিউকো পেনিয়ার",
+          "C": "লিমিটেশন",
+          "D": "লিউকেমিয়া"
+        },
+        "correct_option": "D",
+        "correct_bool": null,
+        "blank_options": null,
+        "blank_answer": null,
+        "left_items": null,
+        "right_items": null,
+        "correct_matches": null,
+        "explanation": "রক্তে শ্বেতকণিকার সংখ্যা অস্বাভাবিকভাবে বেড়ে গেলে তাকে লিউকেমিয়া বা ব্লাড ক্যান্সার বলা হয়।"
+      }
+    ],
+    "easy_lessons": [
+      {
+        "concept": "ফ্যাগোসাইটোসিস (Phagocytosis)",
+        "explanation": "এটি শ্বেত রক্তকণিকার একটি বিশেষ ক্ষমতা যার মাধ্যমে তারা অনেকটা অ্যামিবার মতো নিজের আকার পরিবর্তন করে বাইরের কোনো ক্ষতিকর জীবাণুকে ঘিরে ফেলে এবং পরে এনজাইমের সাহায্যে তা হজম বা ধ্বংস করে ফেলে।"
+      },
+      {
+        "concept": "রক্তের সান্দ্রতা (Viscosity)",
+        "explanation": "সান্দ্রতা মানে হলো রক্তের আঠালোভাব বা ঘনত্ব। লোহিত রক্তকণিকা রক্তকে সঠিক ঘনত্বে রাখতে সাহায্য করে যাতে তা রক্তনালীর মধ্য দিয়ে সহজে প্রবাহিত হতে পারে।"
+      }
+    ],
+    "math_and_logic": null
+  },
+  "practice_examples": [
+    {
+      "question": "লোহিত রক্তকণিকার রাসায়নিক উপাদান ও হিমোগ্লোবিনের গঠন বর্ণনা করো।",
+      "is_math": false,
+      "steps": [
+        "Step 1: হিমোগ্লোবিন হলো লোহিত রক্তকণিকার প্রধান রঞ্জক পদার্থ।",
+        "Step 2: এটি ৪টি পলিপেপটাইড চেইন এবং ১টি লৌহঘটিত হিম (Heme) গ্রুপের সমন্বয়ে গঠিত।"
+      ],
+      "answer": "হিমোগ্লোবিন লোহিত রক্তকণিকার প্রাণকেন্দ্র, যা ৪টি চেইন ও ১টি হিম গ্রুপ দ্বারা তৈরি।",
+      "needs_diagram": true,
+      "diagram_prompt": "A 2D schematic of a hemoglobin molecule showing four distinct polypeptide globin chains (labeled alpha and beta) clustered together, with a small central 'Heme' group containing an iron atom in each chain. Use colors to differentiate the chains.",
+      "diagram_reason": "A diagram helps visualize the quaternary structure of hemoglobin and the location of heme groups."
+    },
+    {
+      "question": "শ্বেত রক্তকণিকার শ্রেণিবিন্যাস একটি ছকের মাধ্যমে দেখাও।",
+      "is_math": false,
+      "steps": [
+        "Step 1: শ্বেত রক্তকণিকাকে সাইটোপ্লাজমে দানার উপস্থিতির ভিত্তিতে দুই ভাগে ভাগ করা হয়: দানাদার (Granulocyte) ও অদানাদার (Agranulocyte)।",
+        "Step 2: অদানাদারের মধ্যে রয়েছে লিম্ফোসাইট ও মোনোসাইট; দানাদারের মধ্যে রয়েছে নিউট্রোফিল, ইওসিনোফিল ও বেসোফিল।"
+      ],
+      "answer": "WBC প্রধানত দুই প্রকার: অ্যাগ্রানিউলোসাইট ও গ্রানিউলোসাইট।",
+      "needs_diagram": true,
+      "diagram_prompt": "A flow chart or classification diagram. Top level: WBC (Leukocyte). Second level divides into Agranulocytes (Lymphocyte, Monocyte) and Granulocytes (Neutrophil, Eosinophil, Basophil). Include simple illustrations of each cell type showing nucleus shapes.",
+      "diagram_reason": "Classification charts are standard in biology to remember categories and subcategories easily."
+    },
+    {
+      "question": "RBC কীভাবে রক্তে বাফার হিসেবে কাজ করে?",
+      "is_math": false,
+      "steps": [
+        "Step 1: লোহিত রক্তকণিকা রক্তে হাইড্রোজেন আয়নের ঘনত্বের পরিবর্তন নিয়ন্ত্রণ করে।",
+        "Step 2: হিমোগ্লোবিন ও অন্যান্য প্রোটিন অম্ল-ক্ষারের সাম্যতা বজায় রেখে রক্তকে বাফার হিসেবে কাজ করতে সাহায্য করে।"
+      ],
+      "answer": "RBC রক্তে অম্ল ও ক্ষারের ভারসাম্য রক্ষা করে বাফার হিসেবে কাজ করে।",
+      "needs_diagram": false,
+      "diagram_prompt": null,
+      "diagram_reason": null
+    },
+    {
+      "question": "একজন ব্যক্তির রক্তে ১ ঘন মিমি-তে যদি ৪,৫০০টি WBC থাকে, তবে গড়ে তার রক্তে কী পরিমাণ RBC থাকতে পারে?",
+      "is_math": true,
+      "steps": [
+        "Step 1: রক্তে RBC ও WBC এর স্বাভাবিক অনুপাত হলো ৬০০:১।",
+        "Step 2: অতএব, RBC এর সংখ্যা হবে ৪,৫০০ × ৬০০।",
+        "Step 3: হিসাব: ২৭,০০,০০০।"
+      ],
+      "answer": "২৭,০০,০০০ টি (২৭ লক্ষ)।",
+      "needs_diagram": false,
+      "diagram_prompt": null,
+      "diagram_reason": null
+    },
+    {
+      "question": "লিঊকোসাইটোসিস ও লিউকেমিয়ার মধ্যে প্রধান পার্থক্য কী?",
+      "is_math": false,
+      "steps": [
+        "Step 1: লিউকোসাইটোসিস হলো সংক্রমণের কারণে শ্বেতকণিকার সংখ্যা স্বাভাবিকের চেয়ে সামান্য বৃদ্ধি পাওয়া (সাধারণত ১১,০০০ এর উপরে)।",
+        "Step 2: লিউকেমিয়া হলো শ্বেতকণিকার অনিয়ন্ত্রিত ও অস্বাভাবিক অতিবৃদ্ধি যা ক্যান্সারের রূপ নেয়।"
+      ],
+      "answer": "লিউকোসাইটোসিস একটি স্বাভাবিক রোগ প্রতিরোধ প্রতিক্রিয়া, কিন্তু লিউকেমিয়া একটি মারাত্মক ক্যান্সার।",
+      "needs_diagram": false,
+      "diagram_prompt": null,
+      "diagram_reason": null
+    },
+    {
+      "question": "রক্তের গ্রুপ নির্ধারণে লোহিত রক্তকণিকার ভূমিকা ব্যাখ্যা করো।",
+      "is_math": false,
+      "steps": [
+        "Step 1: লোহিত রক্তকণিকার প্লাজমা মেমব্রেনের বাইরে নির্দিষ্ট কিছু অ্যান্টিজেন প্রোটিন থাকে।",
+        "Step 2: এই অ্যান্টিজেনের উপস্থিতির ওপর ভিত্তি করেই মানুষের রক্তকে A, B, AB বা O গ্রুপে ভাগ করা হয়।"
+      ],
+      "answer": "লোহিত কণিকার মেমব্রেনে যুক্ত অ্যান্টিজেন প্রোটিনই ব্লাড গ্রুপিংয়ের জন্য দায়ী।",
+      "needs_diagram": false,
+      "diagram_prompt": null,
+      "diagram_reason": null
+    },
+    {
+      "question": "অ্যানজাইমরূপী নাইট্রিক অক্সাইড (NO) রক্তনালীর ওপর কী প্রভাব ফেলে?",
+      "is_math": false,
+      "steps": [
+        "Step 1: RBC থেকে নাইট্রিক অক্সাইড উৎপন্ন হয় যা এন্ডোথেলিয়াল কোষে কাজ করে।",
+        "Step 2: এটি রক্তনালীর প্রসারণে সাহায্য করে এবং রক্তচাপ নিয়ন্ত্রণে ভূমিকা রাখে।"
+      ],
+      "answer": "এটি রক্তনালীকে প্রসারিত করে রক্ত সঞ্চালন স্বাভাবিক রাখতে সাহায্য করে।",
+      "needs_diagram": false,
+      "diagram_prompt": null,
+      "diagram_reason": null
+    },
+    {
+      "question": "রক্তের সান্দ্রতা বা Viscosity বৃদ্ধিতে RBC এর গুরুত্ব আলোচনা করো।",
+      "is_math": false,
+      "steps": [
+        "Step 1: রক্তে লোহিত রক্তকণিকার আধিক্য রক্তের ঘনত্ব বৃদ্ধি করে।",
+        "Step 2: এই ঘনত্ব বা সান্দ্রতা রক্ত সঞ্চালনের গতি এবং হৃদপিণ্ডের কাজের ওপর প্রভাব ফেলে।"
+      ],
+      "answer": "RBC রক্তের ঘনত্ব ও সান্দ্রতা বজায় রাখার প্রধান উপাদান।",
+      "needs_diagram": false,
+      "diagram_prompt": null,
+      "diagram_reason": null
+    }
+  ],
+  "top_questions": [
+    {
+      "question_text": "রক্তে প্রতি ঘন মিলিমিটারে শ্বেত রক্তকণিকার গড় সংখ্যা কত?",
+      "difficulty": "easy",
+      "question_type": "mcq",
+      "source": "HSC",
+      "options": {
+        "A": "৫,০০০",
+        "B": "৭,৫০০",
+        "C": "১০,০০০",
+        "D": "১৫,০০০"
+      },
+      "correct_option": "B",
+      "selectable_points": null,
+      "answer": null,
+      "explanation": "রক্তে শ্বেতকণিকার স্বাভাবিক সীমা ৪,০০০-১১,০০০ হলেও গড় সংখ্যা প্রায় ৭,৫০০।"
+    },
+    {
+      "question_text": "রক্তকে কেন 'ভ্রাম্যমাণ প্রতিরক্ষাকারী একক' বলা হয়?",
+      "difficulty": "medium",
+      "question_type": "short_answer",
+      "source": "HSC",
+      "options": null,
+      "correct_option": null,
+      "selectable_points": null,
+      "answer": "শ্বেত রক্তকণিকা রক্তের মাধ্যমে সারা দেহে ঘুরে বেড়ায় এবং জীবাণু প্রবেশ করলে ফ্যাগোসাইটোসিস প্রক্রিয়ায় তা ধ্বংস করে দেহকে রক্ষা করে বলে একে ভ্রাম্যমাণ প্রতিরক্ষাকারী একক বলা হয়।",
+      "explanation": "WBC এর রোগ প্রতিরোধ ক্ষমতার কারণে এই নামকরণ করা হয়েছে।"
+    },
+    {
+      "question_text": "নিচের কোনগুলো শ্বেত রক্তকণিকার বৈশিষ্ট্য?",
+      "difficulty": "medium",
+      "question_type": "broad_answer",
+      "source": "HSC",
+      "options": null,
+      "correct_option": null,
+      "selectable_points": [
+        {
+          "point": "নিউক্লিয়াস যুক্ত বড় কোষ",
+          "is_correct": true
+        },
+        {
+          "point": "হিমোগ্লোবিন বিদ্যমান",
+          "is_correct": false
+        },
+        {
+          "point": "নির্দিষ্ট আকারবিহীন",
+          "is_correct": true
+        },
+        {
+          "point": "ফ্যাগোসাইটোসিস করতে পারে",
+          "is_correct": true
+        }
+      ],
+      "answer": null,
+      "explanation": "শ্বেত রক্তকণিকায় নিউক্লিয়াস থাকে, আকার অনিয়ত এবং এরা জীবাণু ধ্বংস করতে পারে, কিন্তু হিমোগ্লোবিন থাকে না।"
+    },
+    {
+      "question_text": "উদ্দীপক: মি. ক-এর রক্ত পরীক্ষায় দেখা গেল তার রক্তে শ্বেত রক্তকণিকার সংখ্যা স্বাভাবিকের চেয়ে অনেক বেশি এবং লোহিত রক্তকণিকা কমে গেছে। তার শারীরিক অবস্থার কারণ ব্যাখ্যা করো।",
+      "difficulty": "hard",
+      "question_type": "creative",
+      "source": "HSC",
+      "options": null,
+      "correct_option": null,
+      "selectable_points": null,
+      "answer": "মি. ক সম্ভবত লিউকেমিয়া বা ব্লাড ক্যান্সারে আক্রান্ত। যখন রক্তে শ্বেতকণিকা অস্বাভাবিক ও অনিয়ন্ত্রিত হারে বাড়ে, তখন তারা লোহিত কণিকা উৎপাদনে বাধা দেয়, ফলে রক্তশূন্যতা দেখা দেয় এবং এটি মৃত্যুর কারণ হতে পারে।",
+      "explanation": "লিউকেমিয়া রোগ নির্ণয় ও এর প্রভাব সংক্রান্ত উচ্চতর দক্ষতা।"
+    },
+    {
+      "question_text": "বিলিরুবিন কোথায় তৈরি হয়?",
+      "difficulty": "easy",
+      "question_type": "mcq",
+      "source": "HSC",
+      "options": {
+        "A": "হৃৎপিণ্ড",
+        "B": "যকৃৎ ও প্লীহা",
+        "C": "ফুসফুস",
+        "D": "বৃক্ক"
+      },
+      "correct_option": "B",
+      "selectable_points": null,
+      "answer": null,
+      "explanation": "মৃত লোহিত রক্তকণিকা যকৃৎ ও প্লীহায় ধ্বংস হওয়ার সময় বিলিরুবিন ও বিলিভার্ডিন উৎপন্ন হয়।"
+    },
+    {
+      "question_text": "রক্তের pH নিয়ন্ত্রণের প্রক্রিয়াটি কী নামে পরিচিত?",
+      "difficulty": "medium",
+      "question_type": "short_answer",
+      "source": "HSC",
+      "options": null,
+      "correct_option": null,
+      "selectable_points": null,
+      "answer": "এটি 'বাফারিং' প্রক্রিয়া নামে পরিচিত, যেখানে RBC-এর প্রোটিন ও হিমোগ্লোবিন হাইড্রোজেন আয়নের ভারসাম্য রক্ষা করে।",
+      "explanation": "রক্তের হোমিওস্ট্যাসিস বা ভারসাম্য রক্ষায় RBC এর কাজ।"
+    },
+    {
+      "question_text": "অ্যাগ্রানিউলোসাইট শ্বেত রক্তকণিকার প্রকারভেদ চিহ্নিত করো।",
+      "difficulty": "medium",
+      "question_type": "broad_answer",
+      "source": "HSC",
+      "options": null,
+      "correct_option": null,
+      "selectable_points": [
+        {
+          "point": "লিম্ফোসাইট",
+          "is_correct": true
+        },
+        {
+          "point": "নিউট্রোফিল",
+          "is_correct": false
+        },
+        {
+          "point": "মোনোসাইট",
+          "is_correct": true
+        },
+        {
+          "point": "বেসোফিল",
+          "is_correct": false
+        }
+      ],
+      "answer": null,
+      "explanation": "শ্বেতকণিকার অদানাদার অংশ হলো লিম্ফোসাইট ও মোনোসাইট।"
+    },
+    {
+      "question_text": "RBC-তে হিম গ্রুপের কাজ কী?",
+      "difficulty": "medium",
+      "question_type": "short_answer",
+      "source": "HSC",
+      "options": null,
+      "correct_option": null,
+      "selectable_points": null,
+      "answer": "হিম গ্রুপ আয়রন ধারণ করে যা অক্সিজেনের সাথে অস্থায়ী বন্ধন তৈরি করে অক্সিজেন পরিবহনে সাহায্য করে এবং রক্তকে লাল দেখায়।",
+      "explanation": "হিমোগ্লোবিনের কার্যকরী অংশের কাজ।"
+    },
+    {
+      "question_text": "লিঊকোপেনিয়া বলতে কী বোঝায়?",
+      "difficulty": "easy",
+      "question_type": "mcq",
+      "source": "HSC",
+      "options": {
+        "A": "WBC এর সংখ্যা বৃদ্ধি",
+        "B": "WBC এর সংখ্যা হ্রাস",
+        "C": "RBC এর সংখ্যা বৃদ্ধি",
+        "D": "অণুচক্রিকার হ্রাস"
+      },
+      "correct_option": "B",
+      "selectable_points": null,
+      "answer": null,
+      "explanation": "রক্তে শ্বেতকণিকার সংখ্যা স্বাভাবিকের (৪,০০০) চেয়ে কমে গেলে তাকে লিউকোপেনিয়া বলে।"
+    },
+    {
+      "question_text": "হিমোগ্লোবিনের একটি অণু কয়টি অক্সিজেন অণু পরিবহন করতে পারে?",
+      "difficulty": "hard",
+      "question_type": "mcq",
+      "source": "Admission",
+      "options": {
+        "A": "১টি",
+        "B": "২টি",
+        "C": "৩টি",
+        "D": "৪টি"
+      },
+      "correct_option": "D",
+      "selectable_points": null,
+      "answer": null,
+      "explanation": "হিমোগ্লোবিনের ৪টি হিম গ্রুপ থাকায় এটি ৪টি অক্সিজেন অণুর (O2) সাথে যুক্ত হতে পারে।"
+    }
+  ],
+  "quick_test": [
+    {
+      "question": "লোহিত রক্তকণিকা কোথায় ধ্বংস হয়?",
+      "options": {
+        "A": "ফুসফুস",
+        "B": "যকৃৎ",
+        "C": "হৃৎপিণ্ড",
+        "D": "বৃক্ক"
+      },
+      "correct_answer": "B",
+      "explanation": "RBC এর জীবনকাল শেষ হলে এটি যকৃৎ ও প্লীহায় ভেঙে যায়।"
+    },
+    {
+      "question": "কোন গ্যাস রক্তনালীর সংকোচনের সংকেত প্রদান করে?",
+      "options": {
+        "A": "CO2",
+        "B": "O2",
+        "C": "H2S",
+        "D": "NO"
+      },
+      "correct_answer": "C",
+      "explanation": "হাইড্রোজেন সালফাইড (H2S) গ্যাস রক্তনালীর সংকোচনের জন্য সংকেত দেয়।"
+    },
+    {
+      "question": "সবুজ বর্ণের পিত্তরঞ্জক কোনটি?",
+      "options": {
+        "A": "বিলিরুবিন",
+        "B": "বিলিভার্ডিন",
+        "C": "হিম",
+        "D": "গ্লোবিন"
+      },
+      "correct_answer": "B",
+      "explanation": null
+    },
+    {
+      "question": "শ্বেত রক্তকণিকার গড় আয়ু কত দিন? (সাধারণ জ্ঞান থেকে)",
+      "options": {
+        "A": "১২০ দিন",
+        "B": "১-১৫ দিন",
+        "C": "৮-১০ দিন",
+        "D": "২০ দিন"
+      },
+      "correct_answer": "B",
+      "explanation": "RBC এর আয়ু ১২০ দিন হলেও WBC এর আয়ু খুব কম হয়।"
+    },
+    {
+      "question": "রক্তে WBC এর স্বাভাবিক সংখ্যা কত?",
+      "options": {
+        "A": "৫০০-১০০০",
+        "B": "৪০০০-১১০০০",
+        "C": "৫০ লক্ষ",
+        "D": "১ লক্ষ"
+      },
+      "correct_answer": "B",
+      "explanation": null
+    },
+    {
+      "question": "বিলিভার্ডিন কোথা থেকে উৎপন্ন হয়?",
+      "options": {
+        "A": "WBC ধ্বংস হয়ে",
+        "B": "RBC ধ্বংস হয়ে",
+        "C": "প্লাজমা থেকে",
+        "D": "অণুচক্রিকা থেকে"
+      },
+      "correct_answer": "B",
+      "explanation": null
+    },
+    {
+      "question": "হিমোগ্লোবিনের প্রোটিন অংশ কোনটি?",
+      "options": {
+        "A": "হিম",
+        "B": "গ্লোবিন",
+        "C": "লৌহ",
+        "D": "অ্যান্টিজেন"
+      },
+      "correct_answer": "B",
+      "explanation": null
+    },
+    {
+      "question": "ভ্রূণ অবস্থায় RBC কোথায় তৈরি হয়?",
+      "options": {
+        "A": "অস্থিমজ্জা",
+        "B": "যকৃৎ",
+        "C": "বৃক্ক",
+        "D": "ফুসফুস"
+      },
+      "correct_answer": "B",
+      "explanation": "পূর্ণ বয়স্কদের অস্থিমজ্জায় তৈরি হলেও ভ্রূণ অবস্থায় যকৃতে রক্তকণিকা তৈরি হয়।"
+    }
+  ]
+}
