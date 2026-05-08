@@ -67,13 +67,14 @@ class ImportantPointQA(BaseModel):
     fill_in_the_blanks→ question (contains '___' placeholder), blank_answer, explanation
     connecting_answer → left_items, right_items (shuffled), correct_matches, explanation
     """
-    type: Literal["mcq", "true_false", "fill_in_the_blanks", "connecting_answer"] = Field(
+    type: Literal["mcq", "true_false", "fill_in_the_blanks", "connecting_answer", "short_answer"] = Field(
         description=(
             "Discriminator for question format. "
             "mcq: 4-option multiple choice. "
             "true_false: statement student marks true or false. "
             "fill_in_the_blanks: sentence with '___' the student fills. "
-            "connecting_answer: match 2-3 left items to 2-3 right items."
+            "connecting_answer: match 2-3 left items to 2-3 right items. "
+            "short_answer: a ক/খ-style short question requiring a 2–4 sentence answer."
         )
     )
     question: Optional[str] = Field(
@@ -103,8 +104,9 @@ class ImportantPointQA(BaseModel):
     blank_options: Optional[List[str]] = Field(
         default=None,
         description=(
-            "Exactly 3 short options shown to the student. One must equal blank_answer exactly. "
-            "The other two are plausible distractors. Required for fill_in_the_blanks. Null otherwise."
+            "3 or 4 short answer options shown to the student. One must equal blank_answer exactly. "
+            "The rest are plausible distractors. The number is up to the model (3 or 4). "
+            "Required for fill_in_the_blanks. Null otherwise."
         )
     )
     blank_answer: Optional[str] = Field(
@@ -112,6 +114,14 @@ class ImportantPointQA(BaseModel):
         description=(
             "The exact word or phrase that fills the blank. Must match one of blank_options exactly. "
             "Required for fill_in_the_blanks. Null otherwise."
+        )
+    )
+    ka_kha_answer: Optional[str] = Field(
+        default=None,
+        description=(
+            "Model answer for short_answer (ক/খ) type questions. "
+            "2–4 sentences in the document's language. "
+            "Required for short_answer. Null for all other types."
         )
     )
     # Connecting answer-specific
@@ -163,6 +173,14 @@ class KeyPoints(BaseModel):
             "If no genuine shortcuts exist for this topic, return 1 general study tip."
         )
     )
+    common_mistakes: List[str] = Field(
+        default=[],
+        description=(
+            "2–4 common mistakes students make on this topic in exams. "
+            "Each item is one specific error or misconception to avoid. "
+            "Return an empty list if no significant pitfalls exist."
+        )
+    )
     important_points_qa: List[ImportantPointQA] = Field(
         description=(
             "10-12 interactive QA items covering the most critical facts and concepts. "
@@ -188,7 +206,7 @@ class KeyPoints(BaseModel):
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# PRACTICE EXAMPLES — unchanged schema (write-answer UX is Flutter-side)
+# PRACTICE EXAMPLES
 # ─────────────────────────────────────────────────────────────────────────────
 
 class PracticeExample(BaseModel):
@@ -207,6 +225,17 @@ class PracticeExample(BaseModel):
     )
     answer: str = Field(
         description="The final answer, clearly stated. Include units where applicable."
+    )
+    answer_choices: Optional[List[str]] = Field(
+        default=None,
+        description=(
+            "3 or 4 short answer options shown as MCQ buttons to the student. "
+            "One option must match or clearly represent the correct `answer`. "
+            "Others are plausible distractors at a similar level of detail. "
+            "For math/numeric: include values with units (e.g. '50 m/s', '100 N'). "
+            "For concepts: include short phrases of 5–10 words max. "
+            "Include for ALL problems. Null only when no meaningful distractors exist."
+        )
     )
     # Diagram flags — only evaluated for problems at index 0 and 1.
     needs_diagram: bool = Field(
@@ -429,7 +458,10 @@ Do NOT infer class_level from content — it is already confirmed above.
 - True/False: test a commonly misunderstood concept.
 - Fill in blank: use '___' in the question text exactly once. Provide exactly 3 blank_options (one equals blank_answer, two are plausible distractors).
 - Connecting answer: 2–3 left items, 2–3 right items in SHUFFLED order, correct_matches lists correct pairs.
+- Short answer (ক/খ): a concise exam-style question. Populate question and ka_kha_answer. All other fields null.
 - All items include explanation.
+
+**common_mistakes** — 2–4 specific errors students make in exams. If none, return empty list.
 
 **easy_lessons** — Simplify only genuinely hard concepts. Skip trivial ones.
 
@@ -441,6 +473,7 @@ Do NOT infer class_level from content — it is already confirmed above.
 - Set is_math=true for numeric/calculation problems, false for definition/essay problems.
 - Each problem: minimum 2 numbered steps.
 - Math/science: numeric answers with units. Humanities: full model answers.
+- **answer_choices**: Always include 3 or 4 options. One must represent the correct answer. For math: numeric values with units. For concepts: short phrases (≤10 words). Distractors must be plausible — not obviously wrong.
 
 **Diagram flags — problems at index 0 and 1 only:**
 - Worthy: vectors with direction, free-body diagrams, electric circuits, chemical apparatus, biological structures, geometric constructions, ray diagrams, labeled graphs.

@@ -7,6 +7,7 @@ class ImportantPointQA {
   final bool? correctBool;
   final List<String>? blankOptions;
   final String? blankAnswer;
+  final String? kaKhaAnswer;
   final List<String>? leftItems;
   final List<String>? rightItems;
   final List<MatchPair>? correctMatches;
@@ -20,6 +21,7 @@ class ImportantPointQA {
     this.correctBool,
     this.blankOptions,
     this.blankAnswer,
+    this.kaKhaAnswer,
     this.leftItems,
     this.rightItems,
     this.correctMatches,
@@ -39,6 +41,7 @@ class ImportantPointQA {
           ? List<String>.from(json['blank_options'] as List)
           : null,
       blankAnswer: json['blank_answer'] as String?,
+      kaKhaAnswer: json['ka_kha_answer'] as String?,
       leftItems: json['left_items'] != null
           ? List<String>.from(json['left_items'] as List)
           : null,
@@ -101,6 +104,7 @@ class KeyPoints {
   final List<String> whatToLearn;
   final String quickSummary;
   final List<String> shortcutTechniques;
+  final List<String> commonMistakes;
   final List<ImportantPointQA> importantPointsQa;
   final List<EasyLesson> easyLessons;
   final List<MathExample>? mathAndLogic;
@@ -109,6 +113,7 @@ class KeyPoints {
     required this.whatToLearn,
     required this.quickSummary,
     required this.shortcutTechniques,
+    this.commonMistakes = const [],
     required this.importantPointsQa,
     required this.easyLessons,
     this.mathAndLogic,
@@ -120,6 +125,9 @@ class KeyPoints {
       quickSummary: json['quick_summary'] as String,
       shortcutTechniques:
           List<String>.from(json['shortcut_techniques'] as List),
+      commonMistakes: json['common_mistakes'] != null
+          ? List<String>.from(json['common_mistakes'] as List)
+          : [],
       importantPointsQa: (json['important_points_qa'] as List)
           .map((e) => ImportantPointQA.fromJson(e as Map<String, dynamic>))
           .toList(),

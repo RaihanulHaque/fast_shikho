@@ -27,13 +27,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _handleLogin() async {
     setState(() => _errorMessage = null);
-
     final auth = context.read<AuthService>();
     final success = await auth.login(
       _phoneController.text.trim(),
       _passwordController.text,
     );
-
     if (!success && mounted) {
       setState(() => _errorMessage = 'ফোন নম্বর বা পাসওয়ার্ড সঠিক নয়');
     }
@@ -53,62 +51,70 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               const SizedBox(height: 60),
 
-              // App Logo & Name
+              // ── Logo ──
               Center(
-                child: Container(
-                  width: 80,
-                  height: 80,
-                  decoration: BoxDecoration(
-                    gradient: AppColors.primaryGradient,
-                    borderRadius: BorderRadius.circular(20),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.3),
-                        blurRadius: 20,
-                        offset: const Offset(0, 8),
+                child: Column(
+                  children: [
+                    Container(
+                      width: 80,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: AppColors.primaryTintBg,
+                        borderRadius: BorderRadius.circular(22),
+                        border: Border.all(
+                          color: AppColors.primary.withValues(alpha: 0.3),
+                          width: 1.5,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: AppColors.primary.withValues(alpha: 0.25),
+                            blurRadius: 30,
+                            spreadRadius: 2,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.auto_stories_rounded,
-                    color: Colors.white,
-                    size: 40,
-                  ),
+                      child: const Icon(
+                        Icons.bolt_rounded,
+                        color: AppColors.primary,
+                        size: 42,
+                      ),
+                    ),
+                    const SizedBox(height: 20),
+                    Text(
+                      'SHIKHO',
+                      style: GoogleFonts.plusJakartaSans(
+                        fontSize: 30,
+                        fontWeight: FontWeight.w900,
+                        color: AppColors.primary,
+                        letterSpacing: 2,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      'তোমার AI স্টাডি কম্প্যানিয়ন',
+                      style: GoogleFonts.hindSiliguri(
+                        fontSize: 14,
+                        color: AppColors.textSecondary,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              const SizedBox(height: 20),
-              Text(
-                'দ্রুত শিখো',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.hindSiliguri(
-                  fontSize: 28,
-                  fontWeight: FontWeight.w700,
-                  color: AppColors.textPrimary,
-                ),
-              ),
-              const SizedBox(height: 6),
-              Text(
-                'তোমার AI স্টাডি কম্প্যানিয়ন',
-                textAlign: TextAlign.center,
-                style: GoogleFonts.hindSiliguri(
-                  fontSize: 14,
-                  color: AppColors.textSecondary,
-                ),
-              ),
+
               const SizedBox(height: 48),
 
-              // Login Card
+              // ── Login Card ──
               Container(
                 padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   color: AppColors.cardBg,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: AppColors.border, width: 0.5),
+                  border: Border.all(color: AppColors.cardBorder),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.04),
-                      blurRadius: 20,
-                      offset: const Offset(0, 4),
+                      color: Colors.black.withValues(alpha: 0.2),
+                      blurRadius: 30,
+                      offset: const Offset(0, 10),
                     ),
                   ],
                 ),
@@ -119,16 +125,20 @@ class _LoginScreenState extends State<LoginScreen> {
                       'লগইন করুন',
                       style: GoogleFonts.hindSiliguri(
                         fontSize: 20,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w800,
                         color: AppColors.textPrimary,
                       ),
                     ),
                     const SizedBox(height: 20),
 
-                    // Phone field
+                    // Phone
                     TextField(
                       controller: _phoneController,
                       keyboardType: TextInputType.phone,
+                      style: GoogleFonts.plusJakartaSans(
+                        color: AppColors.textPrimary,
+                        fontSize: 15,
+                      ),
                       decoration: InputDecoration(
                         labelText: 'ফোন নম্বর',
                         hintText: '01XXXXXXXXX',
@@ -140,12 +150,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       ),
                     ),
-                    const SizedBox(height: 16),
+                    const SizedBox(height: 14),
 
-                    // Password field
+                    // Password
                     TextField(
                       controller: _passwordController,
                       obscureText: _obscurePassword,
+                      style: GoogleFonts.plusJakartaSans(
+                        color: AppColors.textPrimary,
+                        fontSize: 15,
+                      ),
                       decoration: InputDecoration(
                         labelText: 'পাসওয়ার্ড',
                         prefixIcon: const Icon(Icons.lock_outline, size: 20),
@@ -155,10 +169,10 @@ class _LoginScreenState extends State<LoginScreen> {
                                 ? Icons.visibility_off_outlined
                                 : Icons.visibility_outlined,
                             size: 20,
+                            color: AppColors.textSecondary,
                           ),
-                          onPressed: () {
-                            setState(() => _obscurePassword = !_obscurePassword);
-                          },
+                          onPressed: () =>
+                              setState(() => _obscurePassword = !_obscurePassword),
                         ),
                       ),
                     ),
@@ -168,8 +182,11 @@ class _LoginScreenState extends State<LoginScreen> {
                       Container(
                         padding: const EdgeInsets.all(12),
                         decoration: BoxDecoration(
-                          color: AppColors.error.withValues(alpha: 0.1),
+                          color: AppColors.errorTintBg,
                           borderRadius: BorderRadius.circular(10),
+                          border: Border.all(
+                            color: AppColors.error.withValues(alpha: 0.2),
+                          ),
                         ),
                         child: Text(
                           _errorMessage!,
@@ -183,28 +200,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
                     const SizedBox(height: 24),
 
-                    // Login button
-                    SizedBox(
-                      height: 52,
-                      child: ElevatedButton(
-                        onPressed: auth.isLoading ? null : _handleLogin,
-                        child: auth.isLoading
-                            ? const SizedBox(
-                                width: 22,
-                                height: 22,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: Colors.white,
-                                ),
-                              )
-                            : Text(
-                                'লগইন',
-                                style: GoogleFonts.hindSiliguri(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                      ),
+                    // ── Login button (Duolingo 3D style) ──
+                    _DuoLoginButton(
+                      label: 'লগইন',
+                      isLoading: auth.isLoading,
+                      onTap: auth.isLoading ? null : _handleLogin,
                     ),
                   ],
                 ),
@@ -224,20 +224,16 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ),
                   GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const RegisterScreen(),
-                        ),
-                      );
-                    },
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const RegisterScreen()),
+                    ),
                     child: Text(
                       'রেজিস্টার করুন',
                       style: GoogleFonts.hindSiliguri(
                         color: AppColors.primary,
                         fontSize: 14,
-                        fontWeight: FontWeight.w600,
+                        fontWeight: FontWeight.w700,
                       ),
                     ),
                   ),
@@ -246,6 +242,82 @@ class _LoginScreenState extends State<LoginScreen> {
               const SizedBox(height: 40),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class _DuoLoginButton extends StatefulWidget {
+  final String label;
+  final bool isLoading;
+  final VoidCallback? onTap;
+
+  const _DuoLoginButton({
+    required this.label,
+    required this.isLoading,
+    this.onTap,
+  });
+
+  @override
+  State<_DuoLoginButton> createState() => _DuoLoginButtonState();
+}
+
+class _DuoLoginButtonState extends State<_DuoLoginButton> {
+  bool _pressed = false;
+
+  @override
+  Widget build(BuildContext context) {
+    final enabled = widget.onTap != null;
+    return GestureDetector(
+      onTapDown: enabled ? (_) => setState(() => _pressed = true) : null,
+      onTapUp: enabled
+          ? (_) {
+              setState(() => _pressed = false);
+              widget.onTap!();
+            }
+          : null,
+      onTapCancel: enabled ? () => setState(() => _pressed = false) : null,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 80),
+        height: 56,
+        margin: EdgeInsets.only(top: _pressed ? 3 : 0),
+        decoration: BoxDecoration(
+          color: AppColors.primary,
+          borderRadius: BorderRadius.circular(16),
+          border: Border(
+            bottom: BorderSide(
+              color: AppColors.primaryDark,
+              width: _pressed ? 1 : 3,
+            ),
+          ),
+          boxShadow: !_pressed
+              ? [
+                  BoxShadow(
+                    color: AppColors.primary.withValues(alpha: 0.3),
+                    blurRadius: 20,
+                  ),
+                ]
+              : null,
+        ),
+        child: Center(
+          child: widget.isLoading
+              ? const SizedBox(
+                  width: 22,
+                  height: 22,
+                  child: CircularProgressIndicator(
+                    strokeWidth: 2.5,
+                    color: Colors.black,
+                  ),
+                )
+              : Text(
+                  widget.label,
+                  style: GoogleFonts.hindSiliguri(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.black,
+                  ),
+                ),
         ),
       ),
     );

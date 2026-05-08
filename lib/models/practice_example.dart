@@ -7,6 +7,7 @@ class PracticeExample {
   final String? diagramPrompt;
   final String? diagramReason;
   final String? diagramUrl; // S3 URL injected by backend
+  final List<String>? answerChoices; // 3-4 MCQ options, one matches answer
 
   PracticeExample({
     required this.question,
@@ -17,6 +18,7 @@ class PracticeExample {
     this.diagramPrompt,
     this.diagramReason,
     this.diagramUrl,
+    this.answerChoices,
   });
 
   factory PracticeExample.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,9 @@ class PracticeExample {
       diagramPrompt: json['diagram_prompt'] as String?,
       diagramReason: json['diagram_reason'] as String?,
       diagramUrl: json['diagram_url'] as String?,
+      answerChoices: json['answer_choices'] != null
+          ? List<String>.from(json['answer_choices'] as List)
+          : null,
     );
   }
 }

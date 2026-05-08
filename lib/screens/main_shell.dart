@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../theme/app_colors.dart';
 import 'home/home_screen.dart';
 import 'history/history_screen.dart';
@@ -18,7 +17,35 @@ class _MainShellState extends State<MainShell> {
   final _screens = const [
     HomeScreen(),
     HistoryScreen(),
+    HistoryScreen(), // Packages tab — will become its own screen later
     ProfileScreen(),
+  ];
+
+  static const _navItems = [
+    _NavItem(
+      activeIcon: Icons.home_rounded,
+      inactiveIcon: Icons.home_outlined,
+      label: 'হোম',
+      svgPath: 'home',
+    ),
+    _NavItem(
+      activeIcon: Icons.layers_rounded,
+      inactiveIcon: Icons.layers_outlined,
+      label: 'প্যাকেজ',
+      svgPath: 'packages',
+    ),
+    _NavItem(
+      activeIcon: Icons.history_rounded,
+      inactiveIcon: Icons.history_outlined,
+      label: 'ইতিহাস',
+      svgPath: 'history',
+    ),
+    _NavItem(
+      activeIcon: Icons.grid_view_rounded,
+      inactiveIcon: Icons.grid_view_outlined,
+      label: 'ড্যাশবোর্ড',
+      svgPath: 'dashboard',
+    ),
   ];
 
   @override
@@ -28,61 +55,121 @@ class _MainShellState extends State<MainShell> {
         index: _currentIndex,
         children: _screens,
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: AppColors.cardBg,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.06),
-              blurRadius: 20,
-              offset: const Offset(0, -4),
-            ),
-          ],
+      bottomNavigationBar: _DarkBottomNav(
+        currentIndex: _currentIndex,
+        items: _navItems,
+        onTap: (i) => setState(() => _currentIndex = i),
+      ),
+    );
+  }
+}
+
+// ─────────────────── Nav data ───────────────────
+
+class _NavItem {
+  final IconData activeIcon;
+  final IconData inactiveIcon;
+  final String label;
+  final String svgPath;
+
+  const _NavItem({
+    required this.activeIcon,
+    required this.inactiveIcon,
+    required this.label,
+    required this.svgPath,
+  });
+}
+
+// ─────────────────── Bottom Nav ───────────────────
+
+class _DarkBottomNav extends StatelessWidget {
+  final int currentIndex;
+  final List<_NavItem> items;
+  final ValueChanged<int> onTap;
+
+  const _DarkBottomNav({
+    required this.currentIndex,
+    required this.items,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: AppColors.navBg,
+        border: const Border(
+          top: BorderSide(color: AppColors.cardBorder, width: 1),
         ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                _buildNavItem(0, Icons.home_rounded, Icons.home_outlined, 'হোম'),
-                _buildNavItem(1, Icons.history_rounded, Icons.history_outlined, 'ইতিহাস'),
-                _buildNavItem(2, Icons.person_rounded, Icons.person_outlined, 'প্রোফাইল'),
-              ],
-            ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.3),
+            blurRadius: 20,
+            offset: const Offset(0, -4),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: List.generate(items.length, (i) {
+              return _NavButton(
+                item: items[i],
+                isActive: i == currentIndex,
+                onTap: () => onTap(i),
+              );
+            }),
           ),
         ),
       ),
     );
   }
+}
 
-  Widget _buildNavItem(int index, IconData activeIcon, IconData inactiveIcon, String label) {
-    final isActive = _currentIndex == index;
+class _NavButton extends StatelessWidget {
+  final _NavItem item;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  const _NavButton({
+    required this.item,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => setState(() => _currentIndex = index),
+      onTap: onTap,
       behavior: HitTestBehavior.opaque,
       child: AnimatedContainer(
         duration: const Duration(milliseconds: 200),
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 8),
         decoration: BoxDecoration(
-          color: isActive ? AppColors.primary.withValues(alpha: 0.1) : Colors.transparent,
+          color: isActive
+              ? AppColors.primary.withValues(alpha: 0.12)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(14),
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(
-              isActive ? activeIcon : inactiveIcon,
-              color: isActive ? AppColors.primary : AppColors.textHint,
+              isActive ? item.activeIcon : item.inactiveIcon,
+              color: isActive ? AppColors.primary : AppColors.textSecondary,
               size: 24,
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 3),
             Text(
-              label,
-              style: GoogleFonts.hindSiliguri(
-                fontSize: 11,
-                fontWeight: isActive ? FontWeight.w600 : FontWeight.w400,
-                color: isActive ? AppColors.primary : AppColors.textHint,
+              item.label,
+              style: TextStyle(
+                fontFamily: 'HindSiliguri',
+                fontSize: 10,
+                fontWeight: isActive ? FontWeight.w700 : FontWeight.w400,
+                color: isActive ? AppColors.primary : AppColors.textSecondary,
               ),
             ),
           ],

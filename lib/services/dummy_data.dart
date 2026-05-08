@@ -77,6 +77,11 @@ class DummyData {
         "Use the mnemonic 'R-600, W-1' to remember the standard RBC to WBC ratio of 600:1.",
         "Remember 'G-BEN' for Granulocytes: Basophils, Eosinophils, and Neutrophils."
       ],
+      "common_mistakes": [
+        "Haemoglobin এবং Haem-এর মধ্যে পার্থক্য গুলিয়ে ফেলা।",
+        "Leukocytosis (বৃদ্ধি) এবং Leukopenia (হ্রাস) এর সংজ্ঞা অদলবদল করা।",
+        "RBC এবং WBC-এর অনুপাত 600:1 মনে না রাখা।"
+      ],
       "important_points_qa": [
         {
           "type": "mcq",
@@ -142,6 +147,48 @@ class DummyData {
           "right_items": null,
           "correct_matches": null,
           "explanation": "Antigen proteins attached to the plasma membrane of RBCs are responsible for determining blood group."
+        },
+        {
+          "type": "short_answer",
+          "question": "সিন্যাপসিস কী?",
+          "ka_kha_answer": "দুটি হোমোলোগাস ক্রোমোজোমের জোড় বাঁধার প্রক্রিয়াকে সিন্যাপসিস বলে। এটি মিয়োসিসের জাইগোটিন উপপর্যায়ে ঘটে এবং ক্রসিং ওভারের ভিত্তি তৈরি করে।",
+          "options": null,
+          "correct_option": null,
+          "correct_bool": null,
+          "blank_options": null,
+          "blank_answer": null,
+          "left_items": null,
+          "right_items": null,
+          "correct_matches": null,
+          "explanation": "সিন্যাপসিস মিয়োসিসের একটি গুরুত্বপূর্ণ ধাপ যেখানে হোমোলোগাস ক্রোমোজোম যুগ্ম হয়।"
+        },
+        {
+          "type": "short_answer",
+          "question": "লোহিত রক্তকণিকাকে হিমোগ্লোবিনের ধারক বলা হয় কেন?",
+          "ka_kha_answer": "লোহিত রক্তকণিকার মোট প্রোটিনের প্রায় ৩৩% হিমোগ্লোবিন। পরিণত RBC-তে নিউক্লিয়াস না থাকায় কোষের প্রায় পুরো অভ্যন্তর হিমোগ্লোবিনে পরিপূর্ণ থাকে, তাই একে হিমোগ্লোবিনের ধারক বলে।",
+          "options": null,
+          "correct_option": null,
+          "correct_bool": null,
+          "blank_options": null,
+          "blank_answer": null,
+          "left_items": null,
+          "right_items": null,
+          "correct_matches": null,
+          "explanation": "RBC-তে নিউক্লিয়াস অনুপস্থিত তাই সম্পূর্ণ স্থান হিমোগ্লোবিন দ্বারা পূর্ণ থাকে।"
+        },
+        {
+          "type": "short_answer",
+          "question": "লিউকোসাইটোসিস ও লিউকেমিয়ার পার্থক্য লিখ।",
+          "ka_kha_answer": "লিউকোসাইটোসিস হলো সংক্রমণের প্রতিক্রিয়ায় WBC-এর সাময়িক বৃদ্ধি, যা স্বাভাবিক রোগ-প্রতিরোধ প্রক্রিয়া। লিউকেমিয়া একটি মারাত্মক রক্তের ক্যান্সার যেখানে অস্বাভাবিক WBC অনিয়ন্ত্রিতভাবে বৃদ্ধি পায়।",
+          "options": null,
+          "correct_option": null,
+          "correct_bool": null,
+          "blank_options": null,
+          "blank_answer": null,
+          "left_items": null,
+          "right_items": null,
+          "correct_matches": null,
+          "explanation": "লিউকোসাইটোসিস স্বাস্থ্যকর রোগপ্রতিরোধ, লিউকেমিয়া প্রাণঘাতী ক্যান্সার।"
         }
       ],
       "easy_lessons": [
@@ -166,6 +213,7 @@ class DummyData {
           "Step 3: State that the Heme group is responsible for the red color and oxygen binding."
         ],
         "answer": "Hemoglobin is a conjugate protein made of 4 polypeptide chains and 4 Heme groups.",
+        "answer_choices": ["4 chains + 4 Heme groups", "2 chains + 2 Heme groups", "4 chains + 2 Heme groups", "2 chains + 4 Heme groups"],
         "needs_diagram": true,
         "diagram_prompt": "A schematic diagram of a Hemoglobin molecule showing four intertwined polypeptide chains.",
         "diagram_reason": "A diagram helps visualize how the protein chains and heme groups are organized."
@@ -179,6 +227,7 @@ class DummyData {
           "Step 3: Describe nuclei: Lymphocytes have large round nuclei, Monocytes have kidney-shaped nuclei."
         ],
         "answer": "The two Agranulocytes are Lymphocytes and Monocytes.",
+        "answer_choices": ["Lymphocytes and Monocytes", "Neutrophils and Basophils", "Eosinophils and Monocytes", "Lymphocytes and Eosinophils"],
         "needs_diagram": false,
         "diagram_prompt": null,
         "diagram_reason": null
@@ -193,6 +242,7 @@ class DummyData {
           "Step 4: Result."
         ],
         "answer": "5,000 WBCs per mm³.",
+        "answer_choices": ["5,000", "500", "50,000", "500,000"],
         "needs_diagram": false,
         "diagram_prompt": null,
         "diagram_reason": null
@@ -206,6 +256,7 @@ class DummyData {
           "Step 3: This maintains the acid-base balance (pH) of the blood."
         ],
         "answer": "RBCs maintain pH balance by using hemoglobin as a buffer.",
+        "answer_choices": ["By binding H+ ions via hemoglobin", "By releasing CO₂ from lungs", "By producing plasma proteins", "By absorbing excess bile salts"],
         "needs_diagram": false,
         "diagram_prompt": null,
         "diagram_reason": null
@@ -219,6 +270,7 @@ class DummyData {
           "Step 3: Leukemia is life-threatening (cancer); Leukocytosis is an immune response."
         ],
         "answer": "Leukocytosis is healthy immune response; Leukemia is malignant blood cancer.",
+        "answer_choices": ["Immune response vs blood cancer", "Both are immune responses", "Both are types of blood cancer", "Leukemia is normal, Leukocytosis is not"],
         "needs_diagram": false,
         "diagram_prompt": null,
         "diagram_reason": null
@@ -232,6 +284,7 @@ class DummyData {
           "Step 3: Proper viscosity is essential for maintaining blood pressure and flow."
         ],
         "answer": "RBCs maintain blood viscosity ensuring efficient circulation.",
+        "answer_choices": ["By controlling RBC concentration", "By releasing plasma water", "By producing albumin proteins", "By expanding capillary walls"],
         "needs_diagram": false,
         "diagram_prompt": null,
         "diagram_reason": null
@@ -245,6 +298,7 @@ class DummyData {
           "Step 3: Its presence indicates normal recycling of blood components."
         ],
         "answer": "Biliverdin is a green pigment formed from Heme breakdown.",
+        "answer_choices": ["Green pigment from Heme breakdown", "Yellow pigment from Globin breakdown", "Red pigment from iron oxidation", "Blue pigment from Bilirubin"],
         "needs_diagram": false,
         "diagram_prompt": null,
         "diagram_reason": null
@@ -258,6 +312,7 @@ class DummyData {
           "Step 3: This regulates blood flow and vessel diameter."
         ],
         "answer": "RBCs produce H₂S which regulates blood vessel walls.",
+        "answer_choices": ["Regulates blood vessel walls", "Carries oxygen to tissues", "Destroys bacteria in plasma", "Controls body temperature"],
         "needs_diagram": false,
         "diagram_prompt": null,
         "diagram_reason": null

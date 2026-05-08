@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Delulu - Onboarding</title>
+    <link rel="stylesheet" href="panda.css">
+    <script src="panda.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&family=Noto+Serif+Bengali:wght@600;700;800&display=swap');
+
+        :root {
+            --primary: #58CC02;
+            --primary-dim: rgba(88, 204, 2, 0.15);
+            --primary-glow: rgba(88, 204, 2, 0.3);
+            --primary-shadow: #46A302;
+            --bg: #0B1114;
+            --surface: rgba(255, 255, 255, 0.05);
+            --surface-border: rgba(255, 255, 255, 0.1);
+            --ink: #FFFFFF;
+            --muted: #8A9CA8;
+            --warning: #FFC800;
+            --wrong: #FF4B4B;
+        }
+
+        * {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        .bengali-font {
+            font-family: 'Noto Serif Bengali', serif;
+        }
+
+        .mobile-frame {
+            width: 100%;
+            max-width: 414px;
+            height: 896px;
+            max-height: 95vh;
+            background-color: var(--bg);
+            color: var(--ink);
+            position: relative;
+            border-radius: 40px;
+            border: 10px solid #1a1a1a;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.9), 0 0 30px rgba(88, 204, 2, 0.05);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* Top Navigation (Back button) */
+        .top-nav {
+            display: flex;
+            align-items: center;
+            padding: 24px 24px 0;
+            min-height: 60px;
+            z-index: 10;
+        }
+
+        .back-btn {
+            background: var(--surface);
+            border: 1px solid var(--surface-border);
+            color: var(--ink);
+            width: 40px;
+            height: 40px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            transition: 0.2s;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .back-btn.visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        .back-btn:active {
+            transform: scale(0.95);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            padding: 16px 24px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .progress-dot {
+            flex: 1;
+            height: 6px;
+            background: var(--surface);
+            border-radius: 4px;
+            transition: 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .progress-dot.active {
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary-glow);
+        }
+
+        /* Steps Container */
+        .steps-container {
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .step {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 20px 24px 120px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: center;
+            opacity: 0;
+            transform: translateX(100%);
+            pointer-events: none;
+            transition: 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow-y: auto;
+        }
+
+        .step.active {
+            opacity: 1;
+            transform: translateX(0);
+            pointer-events: auto;
+            transition-delay: 0.1s;
+        }
+
+        .step.prev {
+            transform: translateX(-100%);
+            opacity: 0;
+        }
+
+        /* Typography */
+        .step-title {
+            font-size: 28px;
+            font-weight: 900;
+            margin: 0 0 12px;
+            line-height: 1.2;
+        }
+
+        .step-subtitle {
+            font-size: 15px;
+            color: var(--muted);
+            margin: 0 0 32px;
+            line-height: 1.5;
+            font-weight: 500;
+        }
+
+        /* Input Fields */
+        .input-group {
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .input-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--muted);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .custom-input {
+            width: 100%;
+            background: var(--surface);
+            border: 2px solid var(--surface-border);
+            color: var(--ink);
+            padding: 18px 20px;
+            border-radius: 16px;
+            font-size: 18px;
+            font-weight: 700;
+            font-family: inherit;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .custom-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-dim);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .custom-input::placeholder {
+            color: rgba(138, 156, 168, 0.5);
+        }
+
+        /* Phone Input Layout */
+        .phone-input-layout {
+            display: flex;
+            gap: 12px;
+        }
+
+        .country-code {
+            width: 100px;
+            background: var(--surface);
+            border: 2px solid var(--surface-border);
+            color: var(--ink);
+            border-radius: 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'JetBrains Mono', monospace;
+        }
+
+        /* OTP Inputs */
+        .otp-container {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            margin-bottom: 32px;
+        }
+
+        .otp-input {
+            width: 60px;
+            height: 70px;
+            background: var(--surface);
+            border: 2px solid var(--surface-border);
+            border-radius: 16px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 900;
+            font-family: 'JetBrains Mono', monospace;
+            color: var(--ink);
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .otp-input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px var(--primary-dim);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        /* Pill Tabs */
+        .pills-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .pill {
+            background: var(--surface);
+            border: 2px solid var(--surface-border);
+            padding: 16px;
+            border-radius: 16px;
+            color: var(--ink);
+            font-size: 16px;
+            font-weight: 700;
+            text-align: center;
+            cursor: pointer;
+            transition: 0.2s;
+            user-select: none;
+        }
+
+        .pill:active {
+            transform: scale(0.96);
+        }
+
+        .pill.selected {
+            background: var(--primary-dim);
+            border-color: var(--primary);
+            color: var(--primary);
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        /* Action Area */
+        .action-area {
+            padding: 24px;
+            margin-top: auto;
+            z-index: 10;
+            background: linear-gradient(to top, var(--bg) 80%, transparent);
+        }
+
+        .btn-primary {
+            width: 100%;
+            padding: 18px;
+            border-radius: 16px;
+            background: var(--primary);
+            color: #000;
+            border: none;
+            border-bottom: 4px solid var(--primary-shadow);
+            font-size: 18px;
+            font-weight: 900;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-primary:active {
+            border-bottom-width: 0px;
+            transform: translateY(4px);
+            margin-bottom: 4px;
+            /* Maintain layout space */
+        }
+
+        .btn-primary:disabled {
+            background: var(--surface);
+            border-color: var(--surface-border);
+            color: var(--muted);
+            cursor: not-allowed;
+            border-bottom-width: 0;
+            transform: none;
+            margin-bottom: 0;
+        }
+
+        .resend-text {
+            text-align: center;
+            font-size: 14px;
+            color: var(--muted);
+            margin-top: 24px;
+        }
+
+        .resend-link {
+            color: var(--primary);
+            font-weight: 700;
+            text-decoration: none;
+            margin-left: 4px;
+        }
+
+        /* Icon within button */
+        .btn-icon {
+            transition: transform 0.3s;
+        }
+
+        .btn-primary:not(:disabled):hover .btn-icon {
+            transform: translateX(4px);
+        }
+
+        /* Panda Header */
+        .panda-header {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 5;
+        }
+
+        #onboarding-panda {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="mobile-frame">
+
+        <!-- Top Nav -->
+        <div class="top-nav">
+            <button class="back-btn" id="backBtn" onclick="prevStep()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Progress -->
+        <div class="progress-container" id="progressDots">
+            <div class="progress-dot active"></div>
+            <div class="progress-dot"></div>
+            <div class="progress-dot"></div>
+            <div class="progress-dot"></div>
+        </div>
+
+        <!-- Panda Header -->
+        <div class="panda-header">
+            <div id="onboarding-panda"></div>
+        </div>
+
+        <!-- Steps -->
+        <div class="steps-container">
+
+            <!-- Step 1: Phone -->
+            <div class="step active" id="step1">
+                <h1 class="step-title bengali-font">শুরু করা যাক</h1>
+                <p class="step-subtitle bengali-font">আপনার শেখার যাত্রা চালিয়ে যেতে আপনার ফোন নম্বর দিন।</p>
+
+                <div class="input-group">
+                    <label class="input-label bengali-font">ফোন নম্বর</label>
+                    <div class="phone-input-layout">
+                        <div class="country-code">
+                            <span style="font-size: 18px; margin-right: 6px;">🇧🇩</span>+880
+                        </div>
+                        <input type="tel" class="custom-input" id="phoneInput" placeholder="17XX-XXXXXX" maxlength="11"
+                            oninput="validatePhone()">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: OTP -->
+            <div class="step" id="step2">
+                <h1 class="step-title bengali-font">ফোন ভেরিফাই করুন</h1>
+                <p class="step-subtitle bengali-font">আমরা একটি ৪-ডিজিটের কোড পাঠিয়েছি <span id="displayPhone"
+                        style="color: var(--ink); font-weight: 700;">+880</span> নম্বরে।</p>
+
+                <div class="otp-container" id="otpContainer">
+                    <input type="tel" class="otp-input" maxlength="1" oninput="handleOtpInput(this, 1)"
+                        onkeydown="handleOtpDelete(event, this, 1)">
+                    <input type="tel" class="otp-input" maxlength="1" oninput="handleOtpInput(this, 2)"
+                        onkeydown="handleOtpDelete(event, this, 2)">
+                    <input type="tel" class="otp-input" maxlength="1" oninput="handleOtpInput(this, 3)"
+                        onkeydown="handleOtpDelete(event, this, 3)">
+                    <input type="tel" class="otp-input" maxlength="1" oninput="handleOtpInput(this, 4)"
+                        onkeydown="handleOtpDelete(event, this, 4)">
+                </div>
+
+                <div class="resend-text bengali-font">
+                    কোড পাননি? <a href="#" class="resend-link bengali-font">পুনরায় পাঠান</a>
+                </div>
+            </div>
+
+            <!-- Step 3: Name -->
+            <div class="step" id="step3">
+                <h1 class="step-title bengali-font">আপনার নাম কি?</h1>
+                <p class="step-subtitle bengali-font">আপনার ডিলুলু অভিজ্ঞতা ব্যক্তিগতকৃত করি।</p>
+
+                <div class="input-group">
+                    <label class="input-label bengali-font">পুরো নাম</label>
+                    <input type="text" class="custom-input bengali-font" id="nameInput" placeholder="আপনার নাম লিখুন"
+                        oninput="validateName()">
+                </div>
+            </div>
+
+            <!-- Step 4: Class -->
+            <div class="step" id="step4">
+                <h1 class="step-title bengali-font">আপনার ক্লাস নির্বাচন করুন</h1>
+                <p class="step-subtitle bengali-font">আমরা সে অনুযায়ী আপনার পড়ার উপকরণ সাজাবো।</p>
+
+                <div class="pills-grid">
+                    <div class="pill bengali-font" onclick="selectClass(this)">SSC</div>
+                    <div class="pill bengali-font" onclick="selectClass(this)">HSC</div>
+                    <div class="pill bengali-font" onclick="selectClass(this)">Admission</div>
+                    <div class="pill bengali-font" onclick="selectClass(this)">BCS</div>
+                    <div class="pill bengali-font" onclick="selectClass(this)">Bank Job</div>
+                    <div class="pill bengali-font" onclick="selectClass(this)">অন্যান্য</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Action Area -->
+        <div class="action-area">
+            <button class="btn-primary" id="continueBtn" onclick="nextStep()" disabled>
+                <span class="bengali-font">চালিয়ে যান</span>
+                <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                    stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+
+    </div>
+
+    <script>
+        // Mount Native Panda Mascot
+        let panda = null;
+        if (typeof ReactivePanda !== 'undefined') {
+            panda = ReactivePanda.mount('#onboarding-panda');
+            if (panda) panda.react('happy');
+        }
+
+        let currentStep = 1;
+        const totalSteps = 4;
+
+        // Step validation functions
+        function validatePhone() {
+            const val = document.getElementById('phoneInput').value;
+            const btn = document.getElementById('continueBtn');
+            if (val.length >= 10) {
+                btn.disabled = false;
+            } else {
+                btn.disabled = true;
+            }
+        }
+
+        function handleOtpInput(input, index) {
+            input.value = input.value.replace(/[^0-9]/g, ''); // Ensure only numbers
+
+            if (input.value && index < 4) {
+                // Move to next input
+                const next = input.nextElementSibling;
+                if (next) next.focus();
+            }
+            checkOtpComplete();
+        }
+
+        function handleOtpDelete(e, input, index) {
+            if (e.key === 'Backspace' && !input.value && index > 1) {
+                const prev = input.previousElementSibling;
+                if (prev) {
+                    prev.focus();
+                    prev.value = '';
+                }
+            }
+            setTimeout(checkOtpComplete, 10);
+        }
+
+        function checkOtpComplete() {
+            const inputs = document.querySelectorAll('.otp-input');
+            let complete = true;
+            inputs.forEach(input => {
+                if (!input.value) complete = false;
+            });
+            document.getElementById('continueBtn').disabled = !complete;
+        }
+
+        function validateName() {
+            const val = document.getElementById('nameInput').value.trim();
+            document.getElementById('continueBtn').disabled = val.length < 2;
+        }
+
+        function selectClass(element) {
+            const pills = document.querySelectorAll('.pill');
+            pills.forEach(p => p.classList.remove('selected'));
+            element.classList.add('selected');
+
+            const btn = document.getElementById('continueBtn');
+            btn.disabled = false;
+
+            // Update button text on last step
+            btn.innerHTML = `<span class="bengali-font">শুরু করি!</span> <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>`;
+        }
+
+        // Navigation logic
+        function updateUI() {
+            // Update steps
+            for (let i = 1; i <= totalSteps; i++) {
+                const stepEl = document.getElementById('step' + i);
+                if (i < currentStep) {
+                    stepEl.className = 'step prev';
+                } else if (i === currentStep) {
+                    stepEl.className = 'step active';
+                } else {
+                    stepEl.className = 'step';
+                }
+            }
+
+            // Update progress dots
+            const dots = document.querySelectorAll('.progress-dot');
+            dots.forEach((dot, index) => {
+                if (index < currentStep) {
+                    dot.classList.add('active');
+                } else {
+                    dot.classList.remove('active');
+                }
+            });
+
+            // Update Back Button
+            const backBtn = document.getElementById('backBtn');
+            if (currentStep > 1) {
+                backBtn.classList.add('visible');
+            } else {
+                backBtn.classList.remove('visible');
+            }
+
+            // Reset Continue button state based on current step
+            const btn = document.getElementById('continueBtn');
+            btn.innerHTML = `<span class="bengali-font">চালিয়ে যান</span> <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>`;
+
+            if (panda) {
+                if (currentStep === 1) panda.react('happy');
+                else if (currentStep === 2) panda.react('thinking');
+                else if (currentStep === 3) panda.react('happy');
+                else if (currentStep === 4) panda.react('thinking');
+            }
+
+            if (currentStep === 1) validatePhone();
+            else if (currentStep === 2) {
+                // Update phone number display
+                const phone = document.getElementById('phoneInput').value;
+                document.getElementById('displayPhone').innerText = '+880 ' + phone;
+                checkOtpComplete();
+                // Focus first OTP input slightly delayed
+                setTimeout(() => {
+                    document.querySelector('.otp-input').focus();
+                }, 500);
+            }
+            else if (currentStep === 3) {
+                validateName();
+                setTimeout(() => {
+                    document.getElementById('nameInput').focus();
+                }, 500);
+            }
+            else if (currentStep === 4) {
+                const selected = document.querySelector('.pill.selected');
+                if (selected) {
+                    btn.disabled = false;
+                    btn.innerHTML = `<span class="bengali-font">শুরু করি!</span> <svg class="btn-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg>`;
+                } else {
+                    btn.disabled = true;
+                }
+            }
+        }
+
+        function nextStep() {
+            if (currentStep < totalSteps) {
+                currentStep++;
+                updateUI();
+            } else {
+                // Complete onboarding
+                const btn = document.getElementById('continueBtn');
+                btn.innerHTML = '<div style="width: 24px; height: 24px; border: 3px solid rgba(0,0,0,0.3); border-radius: 50%; border-top-color: #000; animation: spin 1s ease-in-out infinite;"></div>';
+
+                // Simulate API call and redirect
+                setTimeout(() => {
+                    window.location.href = 'dashboard.html';
+                }, 1500);
+            }
+        }
+
+        function prevStep() {
+            if (currentStep > 1) {
+                currentStep--;
+                updateUI();
+            }
+        }
+
+        // Add spinner animation to head
+        const style = document.createElement('style');
+        style.innerHTML = `
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    `;
+        document.head.appendChild(style);
+
+        // Initial check
+        validatePhone();
+    </script>
+</body>
+
+</html>

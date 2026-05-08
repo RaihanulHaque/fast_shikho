@@ -3,15 +3,22 @@ import 'package:flutter/services.dart';
 import 'package:google_fonts/google_fonts.dart';
 import '../../../theme/app_colors.dart';
 import '../../../models/quick_test.dart';
+import '../../widgets/panda_face.dart';
 
 class QuickTestTab extends StatefulWidget {
   final List<QuickTestMCQ> questions;
   final int stepIndex;
+  final void Function(double)? onScrollProgress;
+  final VoidCallback? onCorrect;
+  final VoidCallback? onWrong;
 
   const QuickTestTab({
     super.key,
     required this.questions,
     this.stepIndex = 3,
+    this.onScrollProgress,
+    this.onCorrect,
+    this.onWrong,
   });
 
   @override
@@ -19,537 +26,327 @@ class QuickTestTab extends StatefulWidget {
 }
 
 class _QuickTestTabState extends State<QuickTestTab> {
-  static const _initialCount = 6;
-
-  int _visibleCount = _initialCount;
-  bool _expanded = false;
-
-  // Duolingo-style live tracking
+  int _currentIndex = 0;
+  bool _showScoreCard = false;
   int _correct = 0;
-  int _wrong = 0;
-  int _streak = 0;
-  int _maxStreak = 0;
   int _xp = 0;
-  int _answered = 0;
+  String? _selectedOption;
+  bool _answeredCurrent = false;
 
-  // Per-card answers (for final summary)
-  final Map<int, bool> _results = {};
+  void _reportProgress() {
+    if (widget.questions.isEmpty) return;
+    widget.onScrollProgress?.call((_currentIndex + 1) / widget.questions.length);
+  }
 
-  bool get _allAnswered => _answered == widget.questions.length;
-
-  void _onAnswer(int index, bool isCorrect) {
-    if (_results.containsKey(index)) return; // already answered
+  void _onOptionTap(String option) {
+    if (_answeredCurrent) return;
     HapticFeedback.mediumImpact();
+    final isCorrect = option == widget.questions[_currentIndex].correctAnswer;
     setState(() {
-      _results[index] = isCorrect;
-      _answered++;
+      _selectedOption = option;
+      _answeredCurrent = true;
       if (isCorrect) {
         _correct++;
-        _streak++;
-        _maxStreak = _streak > _maxStreak ? _streak : _maxStreak;
-        _xp += 10 + (_streak >= 3 ? 5 : 0); // streak bonus
+        _xp += 10;
       } else {
-        _wrong++;
-        _streak = 0;
         _xp += 2;
       }
     });
-  }
-
-  void _showMore() {
-    setState(() {
-      _visibleCount = widget.questions.length;
-      _expanded = true;
-    });
-  }
-
-  // Whether the first batch (_initialCount) is all answered
-  bool get _firstBatchDone {
-    final batchCount = _visibleCount.clamp(0, _initialCount);
-    for (int i = 0; i < batchCount; i++) {
-      if (!_results.containsKey(i)) return false;
+    if (isCorrect) {
+      widget.onCorrect?.call();
+    } else {
+      widget.onWrong?.call();
     }
-    return true;
+  }
+
+  void _onNext() {
+    if (_currentIndex < widget.questions.length - 1) {
+      setState(() {
+        _currentIndex++;
+        _selectedOption = null;
+        _answeredCurrent = false;
+      });
+      _reportProgress();
+    } else {
+      setState(() => _showScoreCard = true);
+      widget.onScrollProgress?.call(1.0);
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final q = widget.questions;
-    final remaining = q.length - _visibleCount;
-    final showMoreBtn = !_expanded && q.length > _initialCount && _firstBatchDone;
+    if (_showScoreCard) return _buildScoreCard();
 
-    return Column(children: [
-      // ── Live score bar ────────────────────────────────────────────────
-      _LiveScoreBar(
-        correct: _correct,
-        wrong: _wrong,
-        streak: _streak,
-        xp: _xp,
-        total: q.length,
-        answered: _answered,
-      ),
-
-      // ── Streak celebration ────────────────────────────────────────────
-      AnimatedSize(
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-        child: _streak >= 3
-            ? _StreakBanner(streak: _streak)
-            : const SizedBox.shrink(),
-      ),
-
-      // ── Final score card ──────────────────────────────────────────────
-      AnimatedSize(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeOut,
-        child: _allAnswered
-            ? _FinalScoreCard(correct: _correct, total: q.length, xp: _xp, maxStreak: _maxStreak)
-            : const SizedBox.shrink(),
-      ),
-
-      // ── Question list ─────────────────────────────────────────────────
-      Expanded(
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 40),
-          children: [
-            // Visible questions
-            ...List.generate(_visibleCount.clamp(0, q.length), (i) {
-              final isNew = _expanded && i >= _initialCount;
-              return _AnimatedEntry(
-                delay: isNew ? Duration(milliseconds: (i - _initialCount) * 80) : Duration.zero,
-                child: _MCQCard(
-                  question: q[i],
-                  index: i,
-                  result: _results[i],
-                  onAnswer: (correct) => _onAnswer(i, correct),
-                ),
-              );
-            }),
-
-            // Show more button (only after first batch answered)
-            if (showMoreBtn)
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8),
-                child: _ShowMoreButton(
-                  label: 'আরো $remaining টি প্রশ্ন',
-                  onTap: _showMore,
-                ),
-              ),
-
-            // "Answer all to see more" hint
-            if (!_expanded && q.length > _initialCount && !_firstBatchDone && !_allAnswered)
-              Padding(
-                padding: const EdgeInsets.only(top: 4, bottom: 8),
-                child: Center(
-                  child: Text(
-                    'প্রথম $_initialCount টি উত্তর দাও, তারপর আরো প্রশ্ন দেখবে',
-                    style: GoogleFonts.hindSiliguri(fontSize: 12, color: AppColors.textHint),
-                    textAlign: TextAlign.center,
+    final q = widget.questions[_currentIndex];
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: SingleChildScrollView(
+            padding: const EdgeInsets.fromLTRB(20, 24, 20, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${_bengali(_currentIndex + 1)}. ${q.question}',
+                  style: GoogleFonts.hindSiliguri(
+                    fontSize: 19,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.textPrimary,
+                    height: 1.5,
                   ),
                 ),
+                const SizedBox(height: 24),
+                ...q.options.entries.map((e) => _buildOption(e.key, e.value, q.correctAnswer)),
+              ],
+            ),
+          ),
+        ),
+        AnimatedSize(
+          duration: const Duration(milliseconds: 250),
+          curve: Curves.easeOut,
+          child: _answeredCurrent
+              ? Container(
+                  padding: const EdgeInsets.fromLTRB(20, 8, 20, 28),
+                  child: _DuoBtn(
+                    label: _currentIndex == widget.questions.length - 1
+                        ? 'ফলাফল দেখুন'
+                        : 'পরবর্তী প্রশ্ন',
+                    enabled: true,
+                    onTap: _onNext,
+                  ),
+                )
+              : const SizedBox.shrink(),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildOption(String key, String value, String correctAnswer) {
+    final isSelected = key == _selectedOption;
+    final isCorrect = key == correctAnswer;
+
+    Color bg = AppColors.darkCard;
+    Color borderColor = AppColors.border;
+    Color textColor = AppColors.textPrimary;
+    Color? trailingColor;
+    IconData? trailingIcon;
+
+    if (_answeredCurrent) {
+      if (isCorrect) {
+        bg = AppColors.primary.withValues(alpha: 0.12);
+        borderColor = AppColors.primary;
+        textColor = AppColors.primary;
+        trailingIcon = Icons.check;
+        trailingColor = AppColors.primary;
+      } else if (isSelected) {
+        bg = AppColors.error.withValues(alpha: 0.12);
+        borderColor = AppColors.error;
+        textColor = AppColors.error;
+        trailingIcon = Icons.close;
+        trailingColor = AppColors.error;
+      }
+    }
+
+    return GestureDetector(
+      onTap: () => _onOptionTap(key),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 220),
+        margin: const EdgeInsets.only(bottom: 12),
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        decoration: BoxDecoration(
+          color: bg,
+          borderRadius: BorderRadius.circular(14),
+          border: Border.all(
+            color: borderColor,
+            width: (isSelected || (_answeredCurrent && isCorrect)) ? 2 : 1,
+          ),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                value,
+                style: GoogleFonts.hindSiliguri(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: textColor,
+                ),
               ),
+            ),
+            if (trailingIcon != null) Icon(trailingIcon, color: trailingColor, size: 20),
           ],
         ),
       ),
-    ]);
+    );
   }
-}
 
-// ─── Live Score Bar ───────────────────────────────────────────────────────────
+  Widget _buildScoreCard() {
+    final pct = widget.questions.isEmpty ? 0.0 : _correct / widget.questions.length;
+    final String title;
+    final String subtitle;
+    if (pct >= 0.8) {
+      title = 'দারুণ হয়েছে!';
+      subtitle = 'পান্ডা খুব খুশি\nএভাবেই চালিয়ে যাও!';
+    } else if (pct >= 0.5) {
+      title = 'মোটামুটি ভালো';
+      subtitle = 'আরেকটু ভালো করতে পারতে\nআবার চেষ্টা করো!';
+    } else {
+      title = 'এইটা কিন্তু ঠিক হয় নাই';
+      subtitle = 'এভাবে হলে পান্ডা খুশি না\nআবার ট্রাই করো, তুমি পারবে';
+    }
 
-class _LiveScoreBar extends StatelessWidget {
-  final int correct, wrong, streak, xp, total, answered;
-  const _LiveScoreBar({required this.correct, required this.wrong, required this.streak, required this.xp, required this.total, required this.answered});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
-      decoration: BoxDecoration(
-        color: AppColors.cardBg,
-        border: Border(bottom: BorderSide(color: AppColors.border, width: 0.5)),
-      ),
-      child: Row(children: [
-        // Correct
-        _StatPill(icon: '✅', value: correct.toString(), color: AppColors.success),
-        const SizedBox(width: 8),
-        // Wrong
-        _StatPill(icon: '❌', value: wrong.toString(), color: AppColors.error),
-        const SizedBox(width: 8),
-        // Streak
-        _StatPill(icon: '🔥', value: streak > 0 ? '$streak' : '-', color: AppColors.warning),
-        const Spacer(),
-        // XP
-        AnimatedSwitcher(
-          duration: const Duration(milliseconds: 300),
-          transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
-          child: Container(
-            key: ValueKey(xp),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-            decoration: BoxDecoration(
-              gradient: AppColors.primaryGradient,
-              borderRadius: BorderRadius.circular(20),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.all(24),
+      child: Column(
+        children: [
+          const SizedBox(height: 16),
+          PandaFace(
+            size: 110,
+            expression: pct >= 0.8
+                ? PandaExpression.happy
+                : pct >= 0.5
+                    ? PandaExpression.idle
+                    : PandaExpression.sad,
+          ),
+          const SizedBox(height: 24),
+          Text(
+            title,
+            style: GoogleFonts.hindSiliguri(
+              fontSize: 26,
+              fontWeight: FontWeight.w800,
+              color: pct >= 0.5 ? AppColors.primary : AppColors.textPrimary,
             ),
-            child: Row(mainAxisSize: MainAxisSize.min, children: [
-              const Text('⚡', style: TextStyle(fontSize: 13)),
-              const SizedBox(width: 4),
-              Text('$xp XP', style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w800, color: Colors.white)),
-            ]),
+            textAlign: TextAlign.center,
           ),
-        ),
-        const SizedBox(width: 10),
-        Text('$answered/$total', style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w600, color: AppColors.textSecondary)),
-      ]),
-    );
-  }
-}
-
-class _StatPill extends StatelessWidget {
-  final String icon, value;
-  final Color color;
-  const _StatPill({required this.icon, required this.value, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedSwitcher(
-      duration: const Duration(milliseconds: 250),
-      transitionBuilder: (child, anim) => ScaleTransition(scale: anim, child: child),
-      child: Container(
-        key: ValueKey(value),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-        decoration: BoxDecoration(color: color.withValues(alpha: 0.1), borderRadius: BorderRadius.circular(20)),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          Text(icon, style: const TextStyle(fontSize: 13)),
-          const SizedBox(width: 4),
-          Text(value, style: GoogleFonts.plusJakartaSans(fontSize: 12, fontWeight: FontWeight.w700, color: color)),
-        ]),
-      ),
-    );
-  }
-}
-
-// ─── Streak Banner ────────────────────────────────────────────────────────────
-
-class _StreakBanner extends StatelessWidget {
-  final int streak;
-  const _StreakBanner({required this.streak});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 8, 16, 0),
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(colors: [AppColors.warning.withValues(alpha: 0.15), AppColors.warning.withValues(alpha: 0.05)]),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: AppColors.warning.withValues(alpha: 0.3)),
-      ),
-      child: Row(children: [
-        const Text('🔥', style: TextStyle(fontSize: 20)),
-        const SizedBox(width: 10),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text('$streak ধারাবাহিক সঠিক!', style: GoogleFonts.hindSiliguri(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.warning)),
-          Text('দারুণ চলছে — থামো না!', style: GoogleFonts.hindSiliguri(fontSize: 11, color: AppColors.textSecondary)),
-        ])),
-        Container(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-          decoration: BoxDecoration(color: AppColors.warning.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
-          child: Text('+5 XP বোনাস', style: GoogleFonts.plusJakartaSans(fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.warning)),
-        ),
-      ]),
-    );
-  }
-}
-
-// ─── Final Score Card ─────────────────────────────────────────────────────────
-
-class _FinalScoreCard extends StatelessWidget {
-  final int correct, total, xp, maxStreak;
-  const _FinalScoreCard({required this.correct, required this.total, required this.xp, required this.maxStreak});
-
-  String _grade() {
-    final pct = correct / total;
-    if (pct >= 0.9) return 'S';
-    if (pct >= 0.75) return 'A';
-    if (pct >= 0.6) return 'B';
-    if (pct >= 0.4) return 'C';
-    return 'D';
-  }
-
-  String _message() {
-    final pct = correct / total;
-    if (pct >= 0.9) return '🌟 অসাধারণ! তুমি মাস্টার!';
-    if (pct >= 0.75) return '🎉 চমৎকার কাজ!';
-    if (pct >= 0.6) return '👍 ভালো, আরো একটু চেষ্টা করো!';
-    if (pct >= 0.4) return '💪 হাল ছাড়ো না!';
-    return '📚 আরেকবার পড়ে চেষ্টা করো';
-  }
-
-  Color _gradeColor() {
-    final g = _grade();
-    if (g == 'S') return const Color(0xFF9B59B6);
-    if (g == 'A') return AppColors.success;
-    if (g == 'B') return AppColors.primary;
-    if (g == 'C') return AppColors.warning;
-    return AppColors.error;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final pct = (correct / total * 100).round();
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-      padding: const EdgeInsets.all(18),
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
-          colors: [_gradeColor().withValues(alpha: 0.12), _gradeColor().withValues(alpha: 0.04)],
-        ),
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: _gradeColor().withValues(alpha: 0.3), width: 1.5),
-      ),
-      child: Row(children: [
-        // Grade circle
-        Container(
-          width: 64, height: 64,
-          decoration: BoxDecoration(
-            color: _gradeColor().withValues(alpha: 0.15),
-            shape: BoxShape.circle,
-            border: Border.all(color: _gradeColor().withValues(alpha: 0.4), width: 2),
+          const SizedBox(height: 8),
+          Text(
+            subtitle,
+            style: GoogleFonts.hindSiliguri(
+              fontSize: 14,
+              color: AppColors.textSecondary,
+              height: 1.6,
+            ),
+            textAlign: TextAlign.center,
           ),
-          child: Center(child: Text(_grade(), style: GoogleFonts.plusJakartaSans(fontSize: 26, fontWeight: FontWeight.w900, color: _gradeColor()))),
-        ),
-        const SizedBox(width: 16),
-        Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-          Text(_message(), style: GoogleFonts.hindSiliguri(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.textPrimary)),
-          const SizedBox(height: 6),
-          Row(children: [
-            Text('$correct/$total সঠিক', style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w600, color: _gradeColor())),
-            const SizedBox(width: 8),
-            Text('·', style: TextStyle(color: AppColors.textHint)),
-            const SizedBox(width: 8),
-            Text('$pct%', style: GoogleFonts.plusJakartaSans(fontSize: 13, color: AppColors.textSecondary)),
-          ]),
-          const SizedBox(height: 4),
-          Row(children: [
-            Text('⚡ $xp XP', style: GoogleFonts.plusJakartaSans(fontSize: 12, color: AppColors.primary, fontWeight: FontWeight.w600)),
-            if (maxStreak >= 3) ...[
-              const SizedBox(width: 8),
-              Text('🔥 সর্বোচ্চ $maxStreak ধারা', style: GoogleFonts.hindSiliguri(fontSize: 11, color: AppColors.warning)),
-            ],
-          ]),
-        ])),
-      ]),
-    );
-  }
-}
-
-// ─── MCQ Card (immediate Duolingo-style feedback) ─────────────────────────────
-
-class _MCQCard extends StatelessWidget {
-  final QuickTestMCQ question;
-  final int index;
-  final bool? result; // null=unanswered, true=correct, false=wrong
-  final void Function(bool) onAnswer;
-
-  const _MCQCard({required this.question, required this.index, required this.result, required this.onAnswer});
-
-  @override
-  Widget build(BuildContext context) {
-    final answered = result != null;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 14),
-      decoration: BoxDecoration(
-        color: AppColors.cardBg,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: answered
-              ? (result! ? AppColors.success.withValues(alpha: 0.4) : AppColors.error.withValues(alpha: 0.4))
-              : AppColors.border,
-          width: answered ? 1.5 : 0.5,
-        ),
-        boxShadow: [BoxShadow(color: Colors.black.withValues(alpha: 0.04), blurRadius: 12, offset: const Offset(0, 4))],
-      ),
-      child: Column(children: [
-        // Result ribbon
-        if (answered)
+          const SizedBox(height: 28),
           Container(
-            width: double.infinity,
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: result! ? AppColors.success.withValues(alpha: 0.1) : AppColors.error.withValues(alpha: 0.1),
-              borderRadius: const BorderRadius.only(topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+              color: AppColors.darkCard,
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(color: AppColors.cardBorder),
             ),
             child: Row(children: [
-              Text(result! ? '✅ সঠিক!' : '❌ ভুল!', style: GoogleFonts.hindSiliguri(fontSize: 13, fontWeight: FontWeight.w700, color: result! ? AppColors.success : AppColors.error)),
-              const Spacer(),
-              Text(result! ? '+10 XP ⚡' : '+2 XP', style: GoogleFonts.plusJakartaSans(fontSize: 11, color: result! ? AppColors.success : AppColors.textHint, fontWeight: FontWeight.w600)),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Column(children: [
+                    Text('কুইজ স্কোর',
+                        style: GoogleFonts.hindSiliguri(fontSize: 13, color: AppColors.textHint)),
+                    const SizedBox(height: 6),
+                    Text('$_correct/${widget.questions.length}',
+                        style: GoogleFonts.plusJakartaSans(
+                            fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.textPrimary)),
+                  ]),
+                ),
+              ),
+              Container(width: 1, height: 50, color: AppColors.border),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 20),
+                  child: Column(children: [
+                    Text('প্রাপ্ত পয়েন্ট',
+                        style: GoogleFonts.hindSiliguri(fontSize: 13, color: AppColors.textHint)),
+                    const SizedBox(height: 6),
+                    Text('+$_xp',
+                        style: GoogleFonts.plusJakartaSans(
+                            fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.xpYellow)),
+                  ]),
+                ),
+              ),
             ]),
           ),
-
-        Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            // Question number + text
-            Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-              Container(
-                width: 30, height: 30,
-                decoration: BoxDecoration(gradient: AppColors.primaryGradient, borderRadius: BorderRadius.circular(9)),
-                child: Center(child: Text('${index + 1}', style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w700, color: Colors.white))),
+          const SizedBox(height: 28),
+          _DuoBtn(label: 'সব উত্তর দেখুন', enabled: true, onTap: () {}),
+          const SizedBox(height: 16),
+          GestureDetector(
+            onTap: () => Navigator.of(context).pop(),
+            child: Text(
+              'ড্যাশবোর্ডে ফিরে যান',
+              style: GoogleFonts.hindSiliguri(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
               ),
-              const SizedBox(width: 12),
-              Expanded(child: Text(question.question, style: GoogleFonts.hindSiliguri(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textPrimary, height: 1.4))),
-            ]),
-            const SizedBox(height: 14),
-
-            // Options
-            ...question.options.entries.map((e) {
-              final isCorrect = e.key == question.correctAnswer;
-              // We don't track which option was selected in parent, so highlight correct + all after answer
-              Color bg = AppColors.scaffoldBg;
-              Color borderColor = AppColors.border;
-              if (answered && isCorrect) { bg = AppColors.success.withValues(alpha: 0.1); borderColor = AppColors.success; }
-              else if (answered) { bg = AppColors.scaffoldBg; borderColor = AppColors.border; }
-
-              return GestureDetector(
-                onTap: !answered ? () => onAnswer(isCorrect) : null,
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 250),
-                  margin: const EdgeInsets.only(bottom: 8),
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 13),
-                  decoration: BoxDecoration(color: bg, borderRadius: BorderRadius.circular(13), border: Border.all(color: borderColor, width: answered && isCorrect ? 1.5 : 0.5)),
-                  child: Row(children: [
-                    AnimatedContainer(
-                      duration: const Duration(milliseconds: 200),
-                      width: 30, height: 30,
-                      decoration: BoxDecoration(
-                        color: answered && isCorrect ? AppColors.success.withValues(alpha: 0.15) : AppColors.cardBg,
-                        borderRadius: BorderRadius.circular(9),
-                        border: Border.all(color: answered && isCorrect ? AppColors.success : AppColors.border),
-                      ),
-                      child: Center(child: Text(e.key, style: GoogleFonts.plusJakartaSans(fontSize: 13, fontWeight: FontWeight.w700, color: answered && isCorrect ? AppColors.success : AppColors.textSecondary))),
-                    ),
-                    const SizedBox(width: 12),
-                    Expanded(child: Text(e.value, style: GoogleFonts.hindSiliguri(fontSize: 14, color: answered && isCorrect ? AppColors.textPrimary : (answered ? AppColors.textHint : AppColors.textPrimary)))),
-                    if (answered && isCorrect) const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 20),
-                  ]),
-                ),
-              );
-            }),
-
-            // Explanation after answer
-            if (answered && question.explanation != null)
-              AnimatedSize(
-                duration: const Duration(milliseconds: 300),
-                curve: Curves.easeOut,
-                child: Container(
-                  margin: const EdgeInsets.only(top: 6),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    gradient: LinearGradient(colors: [AppColors.primary.withValues(alpha: 0.06), AppColors.secondary.withValues(alpha: 0.03)]),
-                    borderRadius: BorderRadius.circular(12),
-                    border: Border.all(color: AppColors.primary.withValues(alpha: 0.12)),
-                  ),
-                  child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                    const Text('💬', style: TextStyle(fontSize: 14)),
-                    const SizedBox(width: 8),
-                    Expanded(child: Text(question.explanation!, style: GoogleFonts.hindSiliguri(fontSize: 12, color: AppColors.textSecondary, height: 1.5))),
-                  ]),
-                ),
-              ),
-          ]),
-        ),
-      ]),
+            ),
+          ),
+        ],
+      ),
     );
   }
-}
 
-// ─── Animated entry ───────────────────────────────────────────────────────────
-
-class _AnimatedEntry extends StatefulWidget {
-  final Widget child;
-  final Duration delay;
-  const _AnimatedEntry({required this.child, required this.delay});
-
-  @override
-  State<_AnimatedEntry> createState() => _AnimatedEntryState();
-}
-
-class _AnimatedEntryState extends State<_AnimatedEntry> with SingleTickerProviderStateMixin {
-  late final AnimationController _ctrl;
-  late final Animation<double> _fade;
-  late final Animation<Offset> _slide;
-
-  @override
-  void initState() {
-    super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
-    _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
-    _slide = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOut));
-    if (widget.delay == Duration.zero) {
-      _ctrl.value = 1.0;
-    } else {
-      Future.delayed(widget.delay, () { if (mounted) _ctrl.forward(); });
-    }
+  static String _bengali(int n) {
+    const d = ['০', '১', '২', '৩', '৪', '৫', '৬', '৭', '৮', '৯'];
+    return n.toString().split('').map((c) {
+      final i = int.tryParse(c);
+      return i != null ? d[i] : c;
+    }).join();
   }
-
-  @override
-  void dispose() { _ctrl.dispose(); super.dispose(); }
-
-  @override
-  Widget build(BuildContext context) => FadeTransition(
-    opacity: _fade,
-    child: SlideTransition(position: _slide, child: widget.child),
-  );
 }
 
-// ─── Show More Button ─────────────────────────────────────────────────────────
+// ─── Duo 3D press button ───────────────────────────────────────────────────────
 
-class _ShowMoreButton extends StatefulWidget {
+class _DuoBtn extends StatefulWidget {
   final String label;
+  final bool enabled;
   final VoidCallback onTap;
-  const _ShowMoreButton({required this.label, required this.onTap});
+  const _DuoBtn({required this.label, required this.enabled, required this.onTap});
 
   @override
-  State<_ShowMoreButton> createState() => _ShowMoreButtonState();
+  State<_DuoBtn> createState() => _DuoBtnState();
 }
 
-class _ShowMoreButtonState extends State<_ShowMoreButton> with SingleTickerProviderStateMixin {
-  late final AnimationController _pulse;
-
-  @override
-  void initState() {
-    super.initState();
-    _pulse = AnimationController(vsync: this, duration: const Duration(milliseconds: 1000))..repeat(reverse: true);
-  }
-
-  @override
-  void dispose() { _pulse.dispose(); super.dispose(); }
+class _DuoBtnState extends State<_DuoBtn> {
+  bool _pressed = false;
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: _pulse,
-      builder: (_, child) => Transform.scale(scale: 1.0 + _pulse.value * 0.025, child: child),
-      child: GestureDetector(
-        onTap: widget.onTap,
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          decoration: BoxDecoration(
-            gradient: LinearGradient(colors: [AppColors.primary.withValues(alpha: 0.1), AppColors.secondary.withValues(alpha: 0.06)]),
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: AppColors.primary.withValues(alpha: 0.35), width: 1.5),
+    final en = widget.enabled;
+    return GestureDetector(
+      onTapDown: en ? (_) => setState(() => _pressed = true) : null,
+      onTapUp: en
+          ? (_) {
+              setState(() => _pressed = false);
+              widget.onTap();
+            }
+          : null,
+      onTapCancel: () => setState(() => _pressed = false),
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 80),
+        width: double.infinity,
+        padding: EdgeInsets.fromLTRB(24, _pressed ? 18 : 16, 24, _pressed ? 14 : 16),
+        margin: EdgeInsets.only(top: _pressed ? 2 : 0),
+        decoration: BoxDecoration(
+          color: en ? AppColors.primary : AppColors.primary.withValues(alpha: 0.3),
+          borderRadius: BorderRadius.circular(16),
+          border: Border(
+            bottom: BorderSide(
+              color: en ? AppColors.primaryDark : Colors.transparent,
+              width: _pressed ? 1 : 3,
+            ),
           ),
-          child: Row(mainAxisAlignment: MainAxisAlignment.center, children: [
-            const Icon(Icons.add_circle_outline_rounded, color: AppColors.primary, size: 20),
-            const SizedBox(width: 8),
-            Text(widget.label, style: GoogleFonts.hindSiliguri(fontSize: 14, fontWeight: FontWeight.w700, color: AppColors.primary)),
-          ]),
+        ),
+        child: Text(
+          widget.label,
+          textAlign: TextAlign.center,
+          style: GoogleFonts.hindSiliguri(
+            fontSize: 18,
+            fontWeight: FontWeight.w800,
+            color: en ? Colors.black : Colors.black.withValues(alpha: 0.5),
+          ),
         ),
       ),
     );
   }
 }
+

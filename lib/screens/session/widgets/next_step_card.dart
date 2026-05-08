@@ -43,7 +43,7 @@ class NextStepCard extends StatelessWidget {
             gradient: const LinearGradient(
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
-              colors: [Color(0xFF4A6CF7), Color(0xFF7B61FF)],
+              colors: [AppColors.primary, AppColors.primaryDark],
             ),
             borderRadius: BorderRadius.circular(20),
             boxShadow: [

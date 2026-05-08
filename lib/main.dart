@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'theme/app_theme.dart';
 import 'services/app_services.dart';
@@ -6,6 +7,13 @@ import 'screens/auth/login_screen.dart';
 import 'screens/main_shell.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
+    statusBarColor: Colors.transparent,
+    statusBarIconBrightness: Brightness.light,
+    systemNavigationBarColor: Color(0xFF0B1114),
+    systemNavigationBarIconBrightness: Brightness.light,
+  ));
   runApp(
     MultiProvider(
       providers: [
